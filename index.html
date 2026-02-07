@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Maths Clicker: Rebirth Evolution</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -25,8 +25,12 @@
             box-sizing: border-box;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
         }
 
+        /* Scrollbar invisible para sensación de App */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        
         body {
             font-family: 'Outfit', sans-serif;
             margin: 0;
@@ -43,11 +47,11 @@
             z-index: 0; pointer-events: none; opacity: 0.6;
         }
 
+        /* LAYOUT PRINCIPAL RESPONSIVE */
         .main-layout {
             display: grid;
-            grid-template-columns: 1fr 420px;
+            grid-template-columns: 1fr 400px;
             width: 100%; height: 100vh;
-            max-width: 1800px; margin: 0 auto;
             position: relative; z-index: 1;
         }
 
@@ -55,17 +59,65 @@
             display: flex; flex-direction: column;
             align-items: center; justify-content: center;
             position: relative; padding: 20px;
+            height: 100%;
         }
 
+        .shop-panel {
+            background: rgba(15, 23, 42, 0.9); /* Restaurado a 0.9 */
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            height: 100vh; display: flex; flex-direction: column;
+            width: 100%;
+        }
+
+        /* MEDIA QUERIES PARA MÓVIL HORIZONTAL */
+        @media (max-width: 950px) {
+            .main-layout {
+                grid-template-columns: 1fr 1fr; /* Mitad y mitad en móvil horizontal */
+            }
+            
+            .score-hud {
+                padding: 15px 20px !important;
+                min-width: auto !important;
+                width: 95%;
+                margin-bottom: 20px !important;
+            }
+            
+            #score { font-size: 2.5rem !important; }
+            
+            .brain-btn-container {
+                width: 220px !important;
+                height: 220px !important;
+            }
+            
+            #btnClick {
+                width: 180px !important;
+                height: 180px !important;
+            }
+            
+            #btnClick span.icon { font-size: 3.5rem !important; }
+            #btnClick span.text { font-size: 1rem !important; }
+
+            .shop-header { padding: 15px !important; }
+            .shop-title { font-size: 1.1rem !important; }
+            
+            .upgrade-card { padding: 8px !important; gap: 8px !important; }
+            .icon-box { width: 32px !important; height: 32px !important; font-size: 1.1rem !important; }
+            .card-info h4 { font-size: 0.85rem !important; }
+            .card-info p { font-size: 0.7rem !important; }
+        }
+
+        /* HUD & SCORE */
         .score-hud {
             text-align: center;
-            background: rgba(15, 23, 42, 0.7);
+            background: rgba(15, 23, 42, 0.7); /* Restaurado a 0.7 */
             backdrop-filter: blur(12px);
             padding: 25px 40px;
             border-radius: 24px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             min-width: 320px;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
+            transition: transform 0.1s;
         }
         
         #score {
@@ -82,7 +134,7 @@
 
         .frenzy-wrapper { width: 100%; margin-top: 15px; }
         .frenzy-container {
-            width: 100%; height: 10px;
+            width: 100%; height: 8px;
             background: rgba(255,255,255,0.1);
             border-radius: 20px; overflow: hidden;
             border: 1px solid rgba(255,255,255,0.1);
@@ -95,17 +147,18 @@
         }
 
         #frenzyLabel {
-            font-size: 0.8rem; margin-top: 8px; color: #f59e0b; font-weight: 700;
-            height: 20px; opacity: 0; transition: opacity 0.3s; letter-spacing: 1px;
+            font-size: 0.75rem; margin-top: 6px; color: #f59e0b; font-weight: 700;
+            height: 16px; opacity: 0; transition: opacity 0.3s; letter-spacing: 1px;
         }
 
+        /* BOTÓN CEREBRO */
         .brain-btn-container {
-            position: relative; width: 320px; height: 320px;
+            position: relative; width: 300px; height: 300px;
             display: flex; justify-content: center; align-items: center;
         }
 
         #btnClick {
-            width: 260px; height: 260px; border-radius: 50%;
+            width: 240px; height: 240px; border-radius: 50%;
             border: none;
             background: radial-gradient(circle at 35% 35%, #60a5fa, #2563eb, #1e40af);
             box-shadow: 
@@ -118,32 +171,29 @@
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.3);
             position: relative;
+            outline: none; -webkit-tap-highlight-color: transparent;
         }
 
-        #btnClick:active { transform: scale(0.94); }
-        .frenzy-active #btnClick { box-shadow: 0 0 60px rgba(245, 158, 11, 0.4), inset 0 0 30px #fbbf24; }
+        #btnClick:active { transform: scale(0.92); }
+        .frenzy-active #btnClick { box-shadow: 0 0 60px rgba(245, 158, 11, 0.4), inset 0 0 30px #fbbf24; animation: pulseFrenzy 1s infinite; }
+        @keyframes pulseFrenzy { 0% {box-shadow: 0 0 40px rgba(245, 158, 11, 0.4);} 50% {box-shadow: 0 0 70px rgba(245, 158, 11, 0.7);} 100% {box-shadow: 0 0 40px rgba(245, 158, 11, 0.4);} }
 
-        #btnClick span.icon { font-size: 5rem; display: block; margin-bottom: 5px; }
-        #btnClick span.text { font-size: 1.4rem; font-weight: 800; letter-spacing: 2px; }
+        #btnClick span.icon { font-size: 4.5rem; display: block; margin-bottom: 5px; pointer-events: none; }
+        #btnClick span.text { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; pointer-events: none; }
         #clickPowerText {
             background: rgba(0,0,0,0.3); padding: 4px 12px; border-radius: 20px;
-            font-size: 0.9rem; margin-top: 8px;
+            font-size: 0.8rem; margin-top: 8px; pointer-events: none;
         }
 
-        .shop-panel {
-            background: rgba(15, 23, 42, 0.9);
-            backdrop-filter: blur(20px);
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            height: 100vh; display: flex; flex-direction: column;
-        }
-
+        /* TIENDA */
         .shop-header {
             padding: 20px; background: rgba(15, 23, 42, 0.95);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex; justify-content: space-between; align-items: center;
+            flex-shrink: 0;
         }
 
-        .shop-title { font-size: 1.4rem; font-weight: 800; color: white; }
+        .shop-title { font-size: 1.3rem; font-weight: 800; color: white; }
         
         .rebirth-stats {
             font-size: 0.8rem; color: var(--gold); background: rgba(251, 191, 36, 0.15);
@@ -151,84 +201,100 @@
             font-weight: 700;
         }
 
-        .shop-content { flex: 1; overflow-y: auto; padding: 0 20px 20px 20px; }
+        .shop-content { 
+            flex: 1; overflow-y: scroll; padding: 0 15px 80px 15px; /* Padding bottom extra para móviles */
+            -webkit-overflow-scrolling: touch;
+        }
 
         .section-header {
-            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px;
-            color: var(--primary); margin: 25px 0 10px 0; font-weight: 700;
+            font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px;
+            color: var(--primary); margin: 20px 0 10px 0; font-weight: 700;
             padding-left: 10px; border-left: 3px solid var(--primary);
+            background: rgba(59, 130, 246, 0.1); padding: 5px 10px; border-radius: 0 4px 4px 0;
         }
 
         .upgrade-card {
             background: var(--card-bg); border-radius: 12px; padding: 12px;
-            margin-bottom: 10px; display: grid; grid-template-columns: auto 1fr auto;
-            gap: 12px; align-items: center; cursor: pointer; transition: 0.2s;
-            border: 1px solid transparent; opacity: 0.6;
+            margin-bottom: 8px; display: grid; grid-template-columns: auto 1fr auto;
+            gap: 12px; align-items: center; cursor: pointer; transition: 0.1s;
+            border: 1px solid transparent; opacity: 0.7;
         }
 
-        .upgrade-card:hover { background: rgba(255,255,255,0.08); }
+        .upgrade-card:active { transform: scale(0.98); background: rgba(255,255,255,0.1); }
         .upgrade-card.affordable { border-color: rgba(16, 185, 129, 0.4); opacity: 1; }
         .upgrade-card.locked { pointer-events: none; filter: grayscale(1); opacity: 0.3; }
 
         .icon-box {
-            width: 40px; height: 40px; background: rgba(255, 255, 255, 0.05);
+            width: 42px; height: 42px; background: rgba(255, 255, 255, 0.05);
             border-radius: 8px; display: flex; align-items: center; justify-content: center;
-            font-size: 1.3rem;
+            font-size: 1.4rem;
         }
 
-        .card-info h4 { margin: 0; font-size: 0.95rem; display: flex; gap: 8px; align-items: center; }
-        .lvl-badge { font-size: 0.7rem; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; }
-        .card-info p { margin: 4px 0 0 0; color: #94a3b8; font-size: 0.8rem; }
+        .card-info h4 { margin: 0; font-size: 0.9rem; display: flex; gap: 8px; align-items: center; color: #e2e8f0; }
+        .lvl-badge { font-size: 0.65rem; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; color: #94a3b8; }
+        .card-info p { margin: 2px 0 0 0; color: #64748b; font-size: 0.75rem; }
 
         .btn-buy {
-            background: #334155; color: #94a3b8; border: none; padding: 8px 10px;
+            background: #334155; color: #94a3b8; border: none; padding: 6px 10px;
             border-radius: 8px; font-family: 'JetBrains Mono', monospace;
-            font-weight: 700; min-width: 70px; text-align: right; font-size: 0.85rem;
+            font-weight: 700; min-width: 60px; text-align: right; font-size: 0.8rem;
         }
-        .affordable .btn-buy { background: var(--accent); color: #064e3b; }
+        .affordable .btn-buy { background: var(--accent); color: #064e3b; box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
 
+        /* UI FLOTANTE */
         #btnRebirth {
-            position: fixed; top: 20px; right: 440px; z-index: 50;
+            position: absolute; top: 20px; right: 20px; z-index: 50;
             background: linear-gradient(135deg, #fbbf24, #d97706);
-            color: #451a03; border: none; padding: 10px 20px; border-radius: 12px;
-            font-weight: 800; cursor: pointer; display: none;
+            color: #451a03; border: none; padding: 8px 16px; border-radius: 12px;
+            font-weight: 800; cursor: pointer; display: none; font-size: 0.8rem;
             box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
             animation: bounceIn 0.5s;
         }
 
         #btnMusic {
-            position: fixed; top: 20px; left: 20px; width: 44px; height: 44px;
-            border-radius: 12px; background: rgba(30,41,59,0.8); color: white;
+            position: absolute; top: 20px; left: 20px; width: 40px; height: 40px;
+            border-radius: 12px; background: rgba(30,41,59,0.6); color: white;
             border: 1px solid rgba(255,255,255,0.1); cursor: pointer; z-index: 50;
+            font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
         }
 
         #btnMathBonus {
-            position: absolute; top: 120px; left: 50%; transform: translateX(-50%);
+            position: absolute; top: 80px; left: 50%; transform: translateX(-50%);
             background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white; padding: 10px 25px; border-radius: 50px; border:none;
-            font-weight: 800; display: none; box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); z-index: 200; cursor: pointer;
+            color: white; padding: 8px 20px; border-radius: 50px; border:none;
+            font-weight: 800; display: none; box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); 
+            z-index: 200; cursor: pointer; font-size: 0.9rem;
+            animation: pulse 1s infinite;
         }
+        @keyframes pulse { 0% {transform: translateX(-50%) scale(1);} 50% {transform: translateX(-50%) scale(1.05);} 100% {transform: translateX(-50%) scale(1);} }
 
         .float-number {
             position: absolute; font-family: 'JetBrains Mono', monospace;
             font-weight: 800; font-size: 1.2rem; pointer-events: none; color: var(--primary);
-            animation: floatUp 0.8s ease-out forwards; z-index: 100;
+            animation: floatUp 0.8s ease-out forwards; z-index: 100; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
-        .float-number.crit { color: #f59e0b; font-size: 1.8rem; text-shadow: 0 0 10px rgba(245,158,11,0.5); }
-        @keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-60px) scale(1.1); opacity: 0; } }
+        .float-number.crit { color: #f59e0b; font-size: 1.6rem; text-shadow: 0 0 10px rgba(245,158,11,0.5); }
+        @keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-80px) scale(1.1); opacity: 0; } }
         @keyframes bounceIn { 0%{transform:scale(0); opacity:0;} 80%{transform:scale(1.1);} 100%{transform:scale(1); opacity:1;} }
 
+        /* MODALES */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(5px);
             display: none; justify-content: center; align-items: center; z-index: 1000;
         }
         .modal-content {
-            background: #1e293b; padding: 30px; border-radius: 24px; text-align: center;
-            width: 90%; max-width: 420px; border: 1px solid rgba(255,255,255,0.1);
+            background: #1e293b; padding: 25px; border-radius: 24px; text-align: center;
+            width: 85%; max-width: 400px; border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
         .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        .option-btn { background: #334155; color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1.2rem; cursor: pointer; }
+        .option-btn { 
+            background: #334155; color: white; border: none; padding: 15px; 
+            border-radius: 12px; font-size: 1.3rem; cursor: pointer; font-family: 'JetBrains Mono';
+            transition: background 0.2s;
+        }
+        .option-btn:active { background: var(--primary); }
         
         .confirm-btn {
             background: var(--gold); color: #451a03; border: none; padding: 16px;
@@ -244,10 +310,11 @@
         <div class="game-panel">
             <button id="btnMusic" onclick="toggleMusic()">🔇</button>
             <button id="btnRebirth" onclick="openRebirthModal()">🎓 GRADUARSE</button>
+            <button id="btnMathBonus" onclick="showMathProblem()">🎁 DESAFÍO (+25%)</button>
 
             <div class="score-hud">
                 <div id="score" class="mono">0<small>IQ</small></div>
-                <div id="rate" class="mono" style="color:var(--text-muted); font-size:0.9rem; margin-top:5px;">
+                <div id="rate" class="mono" style="color:var(--text-muted); font-size:0.8rem; margin-top:5px;">
                     <span id="rateNum">0</span> IQ/seg
                 </div>
 
@@ -258,8 +325,6 @@
                     <div id="frenzyLabel" class="mono">⚡ FLOW STATE: x2 BONUS ⚡</div>
                 </div>
             </div>
-
-            <button id="btnMathBonus" onclick="showMathProblem()">🎁 DESAFÍO (+25%)</button>
 
             <div class="brain-btn-container">
                 <button id="btnClick" onmousedown="handleManualClick(event)" ontouchstart="handleManualClick(event)">
@@ -287,8 +352,8 @@
     <!-- MODALES -->
     <div id="mathModal" class="modal-overlay">
         <div class="modal-content">
-            <h2 style="color:var(--primary); margin:0;">🧠 BONUS RÁPIDO</h2>
-            <p id="mathQuestion" class="mono" style="font-size: 2rem; margin: 20px 0;">¿?</p>
+            <h3 style="color:var(--primary); margin:0; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">Desafío Rápido</h3>
+            <p id="mathQuestion" class="mono" style="font-size: 2.2rem; margin: 25px 0; color: white;">¿?</p>
             <div id="mathOptions" class="option-grid"></div>
         </div>
     </div>
@@ -312,45 +377,60 @@
             <p class="mono" style="font-size:0.9rem; color:#94a3b8;">Requisito: <span id="rebirthCost">1M</span> IQ</p>
             
             <button id="btnConfirmRebirth" class="confirm-btn" onclick="doRebirth()">ACEPTAR TÍTULO</button>
-            <button class="confirm-btn" style="background:transparent; border:1px solid #475569; color:#94a3b8; margin-top:10px;" onclick="document.getElementById('rebirthModal').style.display='none'">Quizás luego</button>
+            <button class="confirm-btn" style="background:transparent; border:1px solid #475569; color:#94a3b8; margin-top:10px; padding: 12px;" onclick="document.getElementById('rebirthModal').style.display='none'">Cancelar</button>
         </div>
     </div>
 
     <script>
         // CONFIGURACIÓN DE MEJORAS
-        const PRICE_SCALE = 1.12;
+        const PRICE_SCALE = 1.14;
 
         const upgradesConfig = [
+            // --- CLICK UPGRADES ---
             { id: 'c1', type: 'click', name: 'Lápiz HB', icon: '✏️', basePrice: 15, power: 1 },
-            { id: 'c2', type: 'click', name: 'Subrayador', icon: '🖍️', basePrice: 80, power: 4 },
-            { id: 'c3', type: 'click', name: 'Regla T', icon: '📏', basePrice: 250, power: 12 },
-            { id: 'c4', type: 'click', name: 'Calculadora', icon: '📟', basePrice: 800, power: 35 },
-            { id: 'c5', type: 'click', name: 'Libro Fórmulas', icon: '📘', basePrice: 2000, power: 90 },
-            { id: 'c6', type: 'click', name: 'Microscopio', icon: '🔬', basePrice: 6000, power: 250 },
-            { id: 'c7', type: 'click', name: 'Superordenador', icon: '🖥️', basePrice: 18000, power: 700 },
-            { id: 'c8', type: 'click', name: 'Chip Cognitivo', icon: '💾', basePrice: 50000, power: 1800 },
-            { id: 'c9', type: 'click', name: 'Enlace Neural', icon: '🔗', basePrice: 150000, power: 5000 },
-            { id: 'c10', type: 'click', name: 'ADN Sintético', icon: '🧬', basePrice: 500000, power: 15000 },
-            { id: 'c11', type: 'click', name: 'IA Predictiva', icon: '🤖', basePrice: 2000000, power: 50000 },
-            { id: 'c12', type: 'click', name: 'Nube Mental', icon: '☁️', basePrice: 10000000, power: 200000 },
-            { id: 'c13', type: 'click', name: 'Qubits Orgánicos', icon: '💠', basePrice: 50000000, power: 800000 },
-            { id: 'c14', type: 'click', name: 'Cerebro Matriz', icon: '🌐', basePrice: 250000000, power: 3000000 },
-            { id: 'c15', type: 'click', name: 'Omnisciencia', icon: '👁️', basePrice: 1000000000, power: 15000000 },
+            { id: 'c2', type: 'click', name: 'Subrayador', icon: '🖍️', basePrice: 80, power: 5 },
+            { id: 'c3', type: 'click', name: 'Regla T', icon: '📏', basePrice: 350, power: 15 },
+            { id: 'c4', type: 'click', name: 'Calculadora', icon: '📟', basePrice: 1200, power: 40 },
+            { id: 'c5', type: 'click', name: 'Libro Fórmulas', icon: '📘', basePrice: 5000, power: 100 },
+            { id: 'c6', type: 'click', name: 'Microscopio', icon: '🔬', basePrice: 20000, power: 300 },
+            { id: 'c7', type: 'click', name: 'Superordenador', icon: '🖥️', basePrice: 80000, power: 1000 },
+            { id: 'c8', type: 'click', name: 'Chip Cognitivo', icon: '💾', basePrice: 350000, power: 4500 },
+            { id: 'c9', type: 'click', name: 'Enlace Neural', icon: '🔗', basePrice: 1500000, power: 12000 },
+            { id: 'c10', type: 'click', name: 'ADN Sintético', icon: '🧬', basePrice: 8000000, power: 35000 },
+            { id: 'c11', type: 'click', name: 'IA Predictiva', icon: '🤖', basePrice: 50000000, power: 100000 },
+            { id: 'c12', type: 'click', name: 'Nube Mental', icon: '☁️', basePrice: 300000000, power: 450000 },
+            { id: 'c13', type: 'click', name: 'Qubits Orgánicos', icon: '💠', basePrice: 1500000000, power: 1500000 },
+            { id: 'c14', type: 'click', name: 'Cerebro Matriz', icon: '🌐', basePrice: 10000000000, power: 5000000 },
+            { id: 'c15', type: 'click', name: 'Omnisciencia', icon: '👁️', basePrice: 80000000000, power: 20000000 },
+            // NUEVOS CLICK
+            { id: 'c16', type: 'click', name: 'Salto Cuántico', icon: '💫', basePrice: 500000000000, power: 150000000 },
+            { id: 'c17', type: 'click', name: 'Teoría de Cuerdas', icon: '🎻', basePrice: 3500000000000, power: 800000000 },
+            { id: 'c18', type: 'click', name: 'Materia Oscura', icon: '⚫', basePrice: 25000000000000, power: 5000000000 },
+            { id: 'c19', type: 'click', name: 'Control Tiempo', icon: '⏳', basePrice: 200000000000000, power: 45000000000 },
+            { id: 'c20', type: 'click', name: 'Ecuación Divina', icon: '🔱', basePrice: 2000000000000000, power: 500000000000 },
+
+            // --- AUTO UPGRADES ---
             { id: 'a1', type: 'auto', name: 'Notas Adhesivas', icon: '🗒️', basePrice: 25, power: 1 },
-            { id: 'a2', type: 'auto', name: 'Apuntes Prestados', icon: '📑', basePrice: 150, power: 6 },
-            { id: 'a3', type: 'auto', name: 'Grupo de Estudio', icon: '👥', basePrice: 800, power: 20 },
-            { id: 'a4', type: 'auto', name: 'Tutor Privado', icon: '👨‍🏫', basePrice: 3000, power: 65 },
-            { id: 'a5', type: 'auto', name: 'Curso Online', icon: '💻', basePrice: 10000, power: 180 },
-            { id: 'a6', type: 'auto', name: 'Biblioteca', icon: '🏛️', basePrice: 35000, power: 500 },
-            { id: 'a7', type: 'auto', name: 'Centro I+D', icon: '🏢', basePrice: 120000, power: 1500 },
-            { id: 'a8', type: 'auto', name: 'Laboratorio Alfa', icon: '⚗️', basePrice: 400000, power: 4500 },
-            { id: 'a9', type: 'auto', name: 'Uni Global', icon: '🎓', basePrice: 1500000, power: 15000 },
-            { id: 'a10', type: 'auto', name: 'Santuario Zen', icon: '🧘', basePrice: 6000000, power: 55000 },
-            { id: 'a11', type: 'auto', name: 'Colisionador', icon: '⚛️', basePrice: 25000000, power: 200000 },
-            { id: 'a12', type: 'auto', name: 'Satélite Edu', icon: '🛰️', basePrice: 120000000, power: 850000 },
-            { id: 'a13', type: 'auto', name: 'Academia Espacial', icon: '🪐', basePrice: 600000000, power: 4000000 },
-            { id: 'a14', type: 'auto', name: 'Mente Enjambre', icon: '🧠', basePrice: 3000000000, power: 18000000 },
-            { id: 'a15', type: 'auto', name: 'Simulación Total', icon: '🌌', basePrice: 15000000000, power: 100000000 },
+            { id: 'a2', type: 'auto', name: 'Apuntes Prestados', icon: '📑', basePrice: 200, power: 5 },
+            { id: 'a3', type: 'auto', name: 'Grupo de Estudio', icon: '👥', basePrice: 1100, power: 18 },
+            { id: 'a4', type: 'auto', name: 'Tutor Privado', icon: '👨‍🏫', basePrice: 5000, power: 60 },
+            { id: 'a5', type: 'auto', name: 'Curso Online', icon: '💻', basePrice: 25000, power: 250 },
+            { id: 'a6', type: 'auto', name: 'Biblioteca', icon: '🏛️', basePrice: 120000, power: 1000 },
+            { id: 'a7', type: 'auto', name: 'Centro I+D', icon: '🏢', basePrice: 600000, power: 4500 },
+            { id: 'a8', type: 'auto', name: 'Laboratorio Alfa', icon: '⚗️', basePrice: 3500000, power: 20000 },
+            { id: 'a9', type: 'auto', name: 'Uni Global', icon: '🎓', basePrice: 20000000, power: 85000 },
+            { id: 'a10', type: 'auto', name: 'Santuario Zen', icon: '🧘', basePrice: 150000000, power: 350000 },
+            { id: 'a11', type: 'auto', name: 'Colisionador', icon: '⚛️', basePrice: 800000000, power: 1500000 },
+            { id: 'a12', type: 'auto', name: 'Satélite Edu', icon: '🛰️', basePrice: 5000000000, power: 6000000 },
+            { id: 'a13', type: 'auto', name: 'Academia Espacial', icon: '🪐', basePrice: 40000000000, power: 25000000 },
+            { id: 'a14', type: 'auto', name: 'Mente Enjambre', icon: '🧠', basePrice: 350000000000, power: 120000000 },
+            { id: 'a15', type: 'auto', name: 'Simulación Total', icon: '🌌', basePrice: 3000000000000, power: 600000000 },
+            // NUEVOS AUTO
+            { id: 'a16', type: 'auto', name: 'Universo Bolsillo', icon: '🔮', basePrice: 35000000000000, power: 3000000000 },
+            { id: 'a17', type: 'auto', name: 'Red Multiversal', icon: '🕸️', basePrice: 400000000000000, power: 20000000000 },
+            { id: 'a18', type: 'auto', name: 'Civilización V', icon: '🛸', basePrice: 5000000000000000, power: 150000000000 },
+            { id: 'a19', type: 'auto', name: 'Matemática Pura', icon: '♾️', basePrice: 70000000000000000, power: 800000000000 },
+            { id: 'a20', type: 'auto', name: 'El Programador', icon: '👨‍💻', basePrice: 999000000000000000, power: 5000000000000 },
         ];
 
         let gameState = {
@@ -364,8 +444,8 @@
         let frenzy = { val: 0, max: 100, active: false, timer: 0, dur: 10000 };
         let audioCtx = null;
         let isMuted = true;
+        let mathBonus = 0; // % acumulado de bonos temporales
 
-        // Variables de Canvas (Declaradas una sola vez aquí)
         const canvas = document.getElementById('mathCanvas');
         const ctx = canvas.getContext('2d');
         let canvasW, canvasH, particles = [];
@@ -380,6 +460,13 @@
         }
 
         function format(n) {
+            if (n === Infinity) return "INFINITO";
+            if (n >= 1e33) return (n/1e33).toFixed(2) + "D"; // Decillon
+            if (n >= 1e30) return (n/1e30).toFixed(2) + "N"; // Nonillon
+            if (n >= 1e27) return (n/1e27).toFixed(2) + "O"; // Octillon
+            if (n >= 1e24) return (n/1e24).toFixed(2) + "Sp"; // Septillon
+            if (n >= 1e21) return (n/1e21).toFixed(2) + "Sx"; // Sextillon
+            if (n >= 1e18) return (n/1e18).toFixed(2) + "Qi"; // Quintillon
             if (n >= 1e15) return (n/1e15).toFixed(2) + "Q";
             if (n >= 1e12) return (n/1e12).toFixed(2) + "T";
             if (n >= 1e9) return (n/1e9).toFixed(2) + "B";
@@ -389,7 +476,7 @@
         }
 
         function getRebirthMult() { return 1 + (gameState.rebirths * 0.5); }
-        function getRebirthCost() { return 1000000 * Math.pow(10, gameState.rebirths); }
+        function getRebirthCost() { return 1000000 * Math.pow(15, gameState.rebirths); } // Costo escala más fuerte
 
         function recalc() {
             let cp = 1, ar = 0;
@@ -459,19 +546,26 @@
         }
 
         function handleManualClick(e) {
-            if(e && e.cancelable) e.preventDefault();
+            // Prevenir doble disparo en algunos dispositivos táctiles
+            if(e.type === 'touchstart') e.preventDefault(); 
+            
             tryAudio();
             
             if(!frenzy.active) {
-                frenzy.val = Math.min(frenzy.max, frenzy.val + 2);
+                frenzy.val = Math.min(frenzy.max, frenzy.val + 3);
                 if(frenzy.val >= frenzy.max) startFrenzy();
             }
 
             gameState.iq += gameState.clickPower;
             
             let x, y;
-            if (e.touches) { x = e.touches[0].clientX; y = e.touches[0].clientY; }
-            else { x = e.clientX; y = e.clientY; }
+            if (e.changedTouches) { 
+                x = e.changedTouches[0].clientX; 
+                y = e.changedTouches[0].clientY; 
+            } else { 
+                x = e.clientX; 
+                y = e.clientY; 
+            }
             spawnFloat(x, y, gameState.clickPower, frenzy.active);
             playSound(300 + Math.random()*200);
         }
@@ -518,7 +612,10 @@
             const el = document.createElement('div');
             el.className = `float-number ${isCrit ? 'crit' : ''}`;
             el.innerText = typeof val === 'string' ? val : `+${format(val)}`;
-            el.style.left = `${x}px`; el.style.top = `${y - 40}px`;
+            // Ajuste para que no salga de pantalla
+            const safeX = Math.min(window.innerWidth - 50, Math.max(20, x));
+            el.style.left = `${safeX}px`; 
+            el.style.top = `${y - 40}px`;
             document.body.appendChild(el);
             setTimeout(() => el.remove(), 800);
         }
@@ -543,19 +640,41 @@
 
         function showMathProblem() {
             document.getElementById('btnMathBonus').style.display = 'none';
-            const n1 = Math.floor(Math.random()*50)+10, n2 = Math.floor(Math.random()*50)+10, ans = n1 + n2;
+            // Dificultad basada en rebirths
+            const max = 20 + (gameState.rebirths * 50);
+            const n1 = Math.floor(Math.random()*max)+10;
+            const n2 = Math.floor(Math.random()*max)+10;
+            const ans = n1 + n2;
+            
             document.getElementById('mathQuestion').innerText = `${n1} + ${n2} = ?`;
             const container = document.getElementById('mathOptions'); container.innerHTML = '';
-            let opts = [ans]; while(opts.length < 4) { let r = ans + (Math.floor(Math.random()*10)-5); if(r>0 && !opts.includes(r)) opts.push(r); }
+            
+            let opts = [ans]; 
+            while(opts.length < 4) { 
+                let r = ans + (Math.floor(Math.random()*20)-10); 
+                if(r>0 && !opts.includes(r)) opts.push(r); 
+            }
+            
             opts.sort(() => Math.random() - 0.5).forEach(o => {
-                const b = document.createElement('button'); b.className = 'option-btn'; b.innerText = o;
-                b.onclick = () => {
+                const b = document.createElement('button'); 
+                b.className = 'option-btn'; 
+                b.innerText = o;
+                
+                // Evento Touch para móviles
+                const handleAnswer = (e) => {
+                    e.preventDefault();
                     document.getElementById('mathModal').style.display = 'none';
                     if(o === ans) {
-                        const reward = Math.max(100, Math.floor(gameState.iq * 0.25));
-                        gameState.iq += reward; spawnFloat(window.innerWidth/2, window.innerHeight/2, reward, true);
+                        const reward = Math.max(500, gameState.iq * 0.30); // 30% del IQ actual
+                        gameState.iq += reward; 
+                        spawnFloat(window.innerWidth/2, window.innerHeight/2, "EXCELENTE!", true);
+                        playSound(1200, 'triangle');
+                    } else {
+                        playSound(150, 'sawtooth');
                     }
                 };
+
+                b.onclick = handleAnswer;
                 container.appendChild(b);
             });
             document.getElementById('mathModal').style.display = 'flex';
@@ -576,19 +695,21 @@
                     recalc(); updateShopTexts();
                 }
             } else if(frenzy.val > 0) {
-                frenzy.val -= (dt/1000)*5;
+                frenzy.val -= (dt/1000)*8; // Cae más rápido
                 document.getElementById('frenzyBar').style.width = Math.max(0, frenzy.val) + "%";
             }
 
             document.getElementById('score').innerHTML = `${format(gameState.iq)}<small>IQ</small>`;
             
+            // Optimización: Solo actualizar clases si cambia estado de asequible
             upgradesConfig.forEach(u => {
                 const el = document.getElementById(`upg-${u.id}`);
-                if(gameState.iq >= getPrice(u)) el.classList.add('affordable');
-                else el.classList.remove('affordable');
+                const affordable = gameState.iq >= getPrice(u);
+                if(affordable && !el.classList.contains('affordable')) el.classList.add('affordable');
+                else if(!affordable && el.classList.contains('affordable')) el.classList.remove('affordable');
             });
 
-            if(gameState.iq >= getRebirthCost() * 0.5 || gameState.rebirths > 0) document.getElementById('btnRebirth').style.display = 'block';
+            if(gameState.iq >= getRebirthCost() * 0.1 || gameState.rebirths > 0) document.getElementById('btnRebirth').style.display = 'block';
 
             requestAnimationFrame(gameLoop);
         }
@@ -603,12 +724,12 @@
         function initParticles() {
             resizeCanvas();
             particles = [];
-            for(let i=0; i<30; i++) {
+            for(let i=0; i<35; i++) {
                 particles.push({
                     x: Math.random() * canvasW, 
                     y: Math.random() * canvasH, 
-                    s: ['π','√','∑','∫'][Math.floor(Math.random()*4)], 
-                    v: 0.5 + Math.random()
+                    s: ['π','√','∑','∫','∞','≠','≈'][Math.floor(Math.random()*7)], 
+                    v: 0.2 + Math.random() * 0.8
                 });
             }
         }
@@ -616,7 +737,7 @@
         function animParticles() {
             ctx.clearRect(0, 0, canvasW, canvasH); 
             ctx.font = '20px monospace'; 
-            ctx.fillStyle = 'rgba(56, 189, 248, 0.2)';
+            ctx.fillStyle = 'rgba(56, 189, 248, 0.2)'; /* Restaurado a 0.2 */
             particles.forEach(p => { 
                 p.y -= p.v; 
                 if(p.y < -20) p.y = canvasH + 20; 
@@ -627,10 +748,13 @@
 
         init();
         
+        // Loop del bonus
         setInterval(() => {
-            const b = document.getElementById('btnMathBonus'); b.style.display = 'block';
-            setTimeout(() => b.style.display = 'none', 10000);
-        }, 45000);
+            const b = document.getElementById('btnMathBonus'); 
+            b.style.display = 'block';
+            playSound(1000, 'sine'); // Aviso sonoro sutil
+            setTimeout(() => b.style.display = 'none', 8000);
+        }, 60000); // Cada minuto
     </script>
 </body>
 </html>
