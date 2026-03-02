@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Maths Clicker: Rebirth Evolution</title>
     
+    <!-- Fuentes: JetBrains Mono, Outfit, Noto Sans (JP/SC/Arabic) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Outfit:wght@300;500;700;900&family=Noto+Sans+JP:wght@400;700&family=Noto+Sans+SC:wght@400;700&family=Noto+Sans+Arabic:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
@@ -16,6 +17,7 @@
             --primary: #3b82f6;
             --accent: #10b981;
             --gold: #fbbf24;
+            --danger: #ef4444;
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --card-bg: rgba(255, 255, 255, 0.05);
@@ -28,11 +30,11 @@
             -webkit-touch-callout: none;
         }
 
-        /* Scrollbar invisible para sensación de App */
         ::-webkit-scrollbar { width: 0px; background: transparent; }
         
         body {
-            font-family: 'Outfit', sans-serif;
+            /* Fuente con fallback para caracteres internacionales incluido Árabe */
+            font-family: 'Outfit', 'Noto Sans Arabic', 'Noto Sans JP', 'Noto Sans SC', sans-serif;
             margin: 0;
             overflow: hidden;
             height: 100vh;
@@ -63,44 +65,60 @@
         }
 
         .shop-panel {
-            background: rgba(15, 23, 42, 0.9); /* Restaurado a 0.9 */
+            background: rgba(15, 23, 42, 0.9);
             backdrop-filter: blur(20px);
             border-left: 1px solid rgba(255, 255, 255, 0.1);
             height: 100vh; display: flex; flex-direction: column;
             width: 100%;
         }
 
-        /* MEDIA QUERIES PARA MÓVIL HORIZONTAL */
+        /* SOPORTE RTL (Right-to-Left) para Árabe */
+        html[dir="rtl"] .main-layout {
+            grid-template-columns: 400px 1fr; /* Panel a la izquierda en RTL */
+        }
+        
+        html[dir="rtl"] .shop-panel {
+            border-left: none;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        html[dir="rtl"] .section-header {
+            padding-left: 0;
+            padding-right: 10px;
+            border-left: none;
+            border-right: 3px solid var(--primary);
+            border-radius: 4px 0 0 4px; /* Invertir radio */
+        }
+
+        html[dir="rtl"] .header-buttons {
+            left: auto; right: 20px;
+        }
+
+        html[dir="rtl"] #btnRebirth {
+            right: auto; left: 20px;
+        }
+
+        html[dir="rtl"] .btn-buy {
+            text-align: left; /* Precio a la izquierda en RTL */
+        }
+        
+        html[dir="rtl"] .modal-content {
+            text-align: right;
+        }
+
+        /* MEDIA QUERIES PARA MÓVIL */
         @media (max-width: 950px) {
-            .main-layout {
-                grid-template-columns: 1fr 1fr; /* Mitad y mitad en móvil horizontal */
-            }
+            .main-layout { grid-template-columns: 1fr 1fr; }
+            html[dir="rtl"] .main-layout { grid-template-columns: 1fr 1fr; }
             
-            .score-hud {
-                padding: 15px 20px !important;
-                min-width: auto !important;
-                width: 95%;
-                margin-bottom: 20px !important;
-            }
-            
+            .score-hud { padding: 15px 20px !important; min-width: auto !important; width: 95%; margin-bottom: 20px !important; }
             #score { font-size: 2.5rem !important; }
-            
-            .brain-btn-container {
-                width: 220px !important;
-                height: 220px !important;
-            }
-            
-            #btnClick {
-                width: 180px !important;
-                height: 180px !important;
-            }
-            
+            .brain-btn-container { width: 220px !important; height: 220px !important; }
+            #btnClick { width: 180px !important; height: 180px !important; }
             #btnClick span.icon { font-size: 3.5rem !important; }
             #btnClick span.text { font-size: 1rem !important; }
-
             .shop-header { padding: 15px !important; }
             .shop-title { font-size: 1.1rem !important; }
-            
             .upgrade-card { padding: 8px !important; gap: 8px !important; }
             .icon-box { width: 32px !important; height: 32px !important; font-size: 1.1rem !important; }
             .card-info h4 { font-size: 0.85rem !important; }
@@ -110,7 +128,7 @@
         /* HUD & SCORE */
         .score-hud {
             text-align: center;
-            background: rgba(15, 23, 42, 0.7); /* Restaurado a 0.7 */
+            background: rgba(15, 23, 42, 0.7);
             backdrop-filter: blur(12px);
             padding: 25px 40px;
             border-radius: 24px;
@@ -128,6 +146,7 @@
             -webkit-text-fill-color: transparent;
             line-height: 1;
             display: flex; align-items: baseline; justify-content: center; gap: 10px;
+            direction: ltr; /* Los números siempre LTR para evitar confusión */
         }
         
         #score small { font-size: 1.2rem; -webkit-text-fill-color: rgba(255,255,255,0.4); }
@@ -151,7 +170,7 @@
             height: 16px; opacity: 0; transition: opacity 0.3s; letter-spacing: 1px;
         }
 
-        /* BOTÓN CEREBRO */
+        /* BOTÓN CEREBRO Y TEMAS (DECORACIÓN) */
         .brain-btn-container {
             position: relative; width: 300px; height: 300px;
             display: flex; justify-content: center; align-items: center;
@@ -160,12 +179,6 @@
         #btnClick {
             width: 240px; height: 240px; border-radius: 50%;
             border: none;
-            background: radial-gradient(circle at 35% 35%, #60a5fa, #2563eb, #1e40af);
-            box-shadow: 
-                inset -10px -10px 20px rgba(0,0,0,0.5),
-                inset 10px 10px 20px rgba(255,255,255,0.4),
-                0 0 0 8px rgba(37, 99, 235, 0.2),
-                0 20px 60px rgba(0,0,0,0.6);
             cursor: pointer; z-index: 10;
             transition: transform 0.05s;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
@@ -174,15 +187,34 @@
             outline: none; -webkit-tap-highlight-color: transparent;
         }
 
+        /* Temas de Decoración */
+        #btnClick.theme-default {
+            background: radial-gradient(circle at 35% 35%, #60a5fa, #2563eb, #1e40af);
+            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.5), inset 10px 10px 20px rgba(255,255,255,0.4), 0 0 0 8px rgba(37, 99, 235, 0.2), 0 20px 60px rgba(0,0,0,0.6);
+        }
+        #btnClick.theme-purple {
+            background: radial-gradient(circle at 35% 35%, #c084fc, #9333ea, #581c87);
+            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.5), inset 10px 10px 20px rgba(255,255,255,0.4), 0 0 0 8px rgba(147, 51, 234, 0.2), 0 20px 60px rgba(0,0,0,0.6);
+        }
+        #btnClick.theme-gold {
+            background: radial-gradient(circle at 35% 35%, #fde047, #eab308, #854d0e);
+            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.5), inset 10px 10px 20px rgba(255,255,255,0.6), 0 0 0 8px rgba(234, 179, 8, 0.2), 0 20px 60px rgba(0,0,0,0.6);
+        }
+        #btnClick.theme-red {
+            background: radial-gradient(circle at 35% 35%, #f87171, #dc2626, #7f1d1d);
+            box-shadow: inset -10px -10px 20px rgba(0,0,0,0.5), inset 10px 10px 20px rgba(255,255,255,0.4), 0 0 0 8px rgba(220, 38, 38, 0.2), 0 20px 60px rgba(0,0,0,0.6);
+        }
+
         #btnClick:active { transform: scale(0.92); }
         .frenzy-active #btnClick { box-shadow: 0 0 60px rgba(245, 158, 11, 0.4), inset 0 0 30px #fbbf24; animation: pulseFrenzy 1s infinite; }
         @keyframes pulseFrenzy { 0% {box-shadow: 0 0 40px rgba(245, 158, 11, 0.4);} 50% {box-shadow: 0 0 70px rgba(245, 158, 11, 0.7);} 100% {box-shadow: 0 0 40px rgba(245, 158, 11, 0.4);} }
 
-        #btnClick span.icon { font-size: 4.5rem; display: block; margin-bottom: 5px; pointer-events: none; }
+        #btnClick span.icon { font-size: 4.5rem; display: block; margin-bottom: 5px; pointer-events: none; transition: transform 0.2s; }
         #btnClick span.text { font-size: 1.2rem; font-weight: 800; letter-spacing: 2px; pointer-events: none; }
         #clickPowerText {
             background: rgba(0,0,0,0.3); padding: 4px 12px; border-radius: 20px;
             font-size: 0.8rem; margin-top: 8px; pointer-events: none;
+            direction: ltr; /* Números siempre LTR */
         }
 
         /* TIENDA */
@@ -198,11 +230,11 @@
         .rebirth-stats {
             font-size: 0.8rem; color: var(--gold); background: rgba(251, 191, 36, 0.15);
             padding: 5px 12px; border-radius: 8px; border: 1px solid rgba(251, 191, 36, 0.3);
-            font-weight: 700;
+            font-weight: 700; direction: ltr;
         }
 
         .shop-content { 
-            flex: 1; overflow-y: scroll; padding: 0 15px 80px 15px; /* Padding bottom extra para móviles */
+            flex: 1; overflow-y: scroll; padding: 0 15px 80px 15px;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -241,7 +273,21 @@
         }
         .affordable .btn-buy { background: var(--accent); color: #064e3b; box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
 
-        /* UI FLOTANTE */
+        /* UI FLOTANTE & BOTONES HEADER */
+        .header-buttons {
+            position: absolute; top: 20px; left: 20px;
+            display: flex; gap: 10px; z-index: 50;
+        }
+
+        .icon-btn {
+            width: 40px; height: 40px;
+            border-radius: 12px; background: rgba(30,41,59,0.6); color: white;
+            border: 1px solid rgba(255,255,255,0.1); cursor: pointer;
+            font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .icon-btn:hover { background: rgba(59, 130, 246, 0.3); }
+
         #btnRebirth {
             position: absolute; top: 20px; right: 20px; z-index: 50;
             background: linear-gradient(135deg, #fbbf24, #d97706);
@@ -249,13 +295,6 @@
             font-weight: 800; cursor: pointer; display: none; font-size: 0.8rem;
             box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
             animation: bounceIn 0.5s;
-        }
-
-        #btnMusic {
-            position: absolute; top: 20px; left: 20px; width: 40px; height: 40px;
-            border-radius: 12px; background: rgba(30,41,59,0.6); color: white;
-            border: 1px solid rgba(255,255,255,0.1); cursor: pointer; z-index: 50;
-            font-size: 1.2rem; display: flex; align-items: center; justify-content: center;
         }
 
         #btnMathBonus {
@@ -266,12 +305,24 @@
             z-index: 200; cursor: pointer; font-size: 0.9rem;
             animation: pulse 1s infinite;
         }
+
+        #btnDecoration {
+            position: absolute; top: 130px; left: 50%; transform: translateX(-50%);
+            background: linear-gradient(135deg, #a855f7, #7e22ce);
+            color: white; padding: 8px 20px; border-radius: 50px; border:none;
+            font-weight: 800; display: none; box-shadow: 0 0 20px rgba(168, 85, 247, 0.5); 
+            z-index: 200; cursor: pointer; font-size: 0.9rem;
+            animation: pulseDeco 2s infinite;
+        }
+
         @keyframes pulse { 0% {transform: translateX(-50%) scale(1);} 50% {transform: translateX(-50%) scale(1.05);} 100% {transform: translateX(-50%) scale(1);} }
+        @keyframes pulseDeco { 0% {transform: translateX(-50%) scale(1);} 50% {transform: translateX(-50%) scale(1.05);} 100% {transform: translateX(-50%) scale(1);} }
 
         .float-number {
             position: absolute; font-family: 'JetBrains Mono', monospace;
             font-weight: 800; font-size: 1.2rem; pointer-events: none; color: var(--primary);
             animation: floatUp 0.8s ease-out forwards; z-index: 100; text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            direction: ltr; /* Números LTR */
         }
         .float-number.crit { color: #f59e0b; font-size: 1.6rem; text-shadow: 0 0 10px rgba(245,158,11,0.5); }
         @keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-80px) scale(1.1); opacity: 0; } }
@@ -300,36 +351,68 @@
             background: var(--gold); color: #451a03; border: none; padding: 16px;
             border-radius: 12px; font-weight: 800; width: 100%; margin-top: 20px; cursor: pointer; font-size: 1rem;
         }
+        
+        .danger-btn {
+            background: rgba(239, 68, 68, 0.2); color: #ef4444; border: 1px solid #ef4444;
+            padding: 12px; border-radius: 12px; font-weight: 800; width: 100%; 
+            margin-top: 10px; cursor: pointer; font-size: 0.9rem;
+        }
+
+        /* LANGUAGE SELECTOR */
+        .lang-select {
+            background: #334155; color: white; border: 1px solid rgba(255,255,255,0.2);
+            padding: 10px; border-radius: 8px; width: 100%; margin-bottom: 20px;
+            font-size: 1rem; font-family: 'Outfit', sans-serif;
+        }
+
+        /* TOAST NOTIFICATION */
+        .toast {
+            position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+            background: rgba(16, 185, 129, 0.9); color: #064e3b;
+            padding: 10px 20px; border-radius: 50px; font-weight: 700;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); z-index: 2000;
+            opacity: 0; transition: opacity 0.3s; pointer-events: none;
+        }
+        .toast.show { opacity: 1; }
     </style>
 </head>
 
 <body>
     <canvas id="mathCanvas"></canvas>
 
+    <div id="saveToast" class="toast">Partida Guardada ✅</div>
+
     <div class="main-layout">
         <div class="game-panel">
-            <button id="btnMusic" onclick="toggleMusic()">🔇</button>
-            <button id="btnRebirth" onclick="openRebirthModal()">🎓 GRADUARSE</button>
-            <button id="btnMathBonus" onclick="showMathProblem()">🎁 DESAFÍO (+25%)</button>
+            <div class="header-buttons">
+                <button id="btnMusic" class="icon-btn" onclick="toggleMusic()">🔇</button>
+                <button id="btnSettings" class="icon-btn" onclick="openSettings()">⚙️</button>
+            </div>
+            
+            <button id="btnRebirth" data-i18n="btn_rebirth" onclick="openRebirthModal()">GRADUARSE</button>
+            <button id="btnMathBonus" data-i18n="btn_challenge" onclick="showMathProblem()">DESAFÍO (+25%)</button>
+            
+            <!-- Botón de Decoración (Se desbloquea a los 10M de IQ) -->
+            <button id="btnDecoration" data-i18n="btn_decoration" onclick="openDecorationModal()">🎨 DECORACIÓN</button>
 
             <div class="score-hud">
-                <div id="score" class="mono">0<small>IQ</small></div>
+                <div id="score" class="mono">0<small data-i18n="score_iq">IQ</small></div>
                 <div id="rate" class="mono" style="color:var(--text-muted); font-size:0.8rem; margin-top:5px;">
-                    <span id="rateNum">0</span> IQ/seg
+                    <span id="rateNum">0</span> <span data-i18n="rate_suffix">IQ/seg</span>
                 </div>
 
                 <div class="frenzy-wrapper">
                     <div class="frenzy-container">
                         <div id="frenzyBar"></div>
                     </div>
-                    <div id="frenzyLabel" class="mono">⚡ FLOW STATE: x2 BONUS ⚡</div>
+                    <div id="frenzyLabel" data-i18n="frenzy_label" class="mono">⚡ FLOW STATE: x2 BONUS ⚡</div>
                 </div>
             </div>
 
             <div class="brain-btn-container">
-                <button id="btnClick" onmousedown="handleManualClick(event)" ontouchstart="handleManualClick(event)">
+                <button id="btnClick" class="theme-default" onmousedown="handleManualClick(event)" ontouchstart="handleManualClick(event)">
                     <span class="icon">🧠</span>
-                    <span class="text">ESTUDIAR</span>
+                    <span class="text" data-i18n="btn_study">ESTUDIAR</span>
                     <span id="clickPowerText" class="mono">+1 IQ</span>
                 </button>
             </div>
@@ -337,13 +420,13 @@
 
         <div class="shop-panel">
             <div class="shop-header">
-                <div class="shop-title">📚 Librería</div>
+                <div class="shop-title" data-i18n="shop_title">📚 Librería</div>
                 <div id="rebirthBadge" class="rebirth-stats" style="display:none">0 🎓</div>
             </div>
             <div class="shop-content">
-                <div class="section-header">Mejoras de Click</div>
+                <div class="section-header" data-i18n="section_click">Mejoras de Click</div>
                 <div id="clickUpgradesList"></div>
-                <div class="section-header">Mejoras Automáticas</div>
+                <div class="section-header" data-i18n="section_auto">Mejoras Automáticas</div>
                 <div id="autoUpgradesList"></div>
             </div>
         </div>
@@ -352,7 +435,7 @@
     <!-- MODALES -->
     <div id="mathModal" class="modal-overlay">
         <div class="modal-content">
-            <h3 style="color:var(--primary); margin:0; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">Desafío Rápido</h3>
+            <h3 data-i18n="modal_math_title" style="color:var(--primary); margin:0; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">Desafío Rápido</h3>
             <p id="mathQuestion" class="mono" style="font-size: 2.2rem; margin: 25px 0; color: white;">¿?</p>
             <div id="mathOptions" class="option-grid"></div>
         </div>
@@ -360,77 +443,494 @@
 
     <div id="rebirthModal" class="modal-overlay">
         <div class="modal-content" style="border: 2px solid var(--gold);">
-            <h2 style="color:var(--gold); margin-top:0;">🎓 GRADUACIÓN</h2>
-            <p style="font-size:0.9rem; color:#cbd5e1;">Reinicia tu IQ y mejoras actuales para obtener un multiplicador permanente.</p>
+            <h2 data-i18n="modal_rebirth_title" style="color:var(--gold); margin-top:0;">🎓 GRADUACIÓN</h2>
+            <p data-i18n="modal_rebirth_desc" style="font-size:0.9rem; color:#cbd5e1;">Reinicia tu IQ y mejoras actuales para obtener un multiplicador permanente.</p>
             
-            <div style="background:rgba(0,0,0,0.3); padding:20px; border-radius:15px; margin:20px 0; text-align: left;">
+            <div style="background:rgba(0,0,0,0.3); padding:20px; border-radius:15px; margin:20px 0;">
                 <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                    <span>Bonus Actual:</span>
+                    <span data-i18n="lbl_current_bonus">Bonus Actual:</span>
                     <span class="mono" style="color:var(--accent)">x<span id="currentMult">1.0</span></span>
                 </div>
                 <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:1.1rem;">
-                    <span>Nuevo Bonus:</span>
+                    <span data-i18n="lbl_new_bonus">Nuevo Bonus:</span>
                     <span class="mono" style="color:var(--gold)">x<span id="nextMult">1.5</span></span>
                 </div>
             </div>
 
-            <p class="mono" style="font-size:0.9rem; color:#94a3b8;">Requisito: <span id="rebirthCost">1M</span> IQ</p>
+            <p class="mono" style="font-size:0.9rem; color:#94a3b8;"><span data-i18n="lbl_req">Requisito:</span> <span id="rebirthCost">1M</span> IQ</p>
             
-            <button id="btnConfirmRebirth" class="confirm-btn" onclick="doRebirth()">ACEPTAR TÍTULO</button>
-            <button class="confirm-btn" style="background:transparent; border:1px solid #475569; color:#94a3b8; margin-top:10px; padding: 12px;" onclick="document.getElementById('rebirthModal').style.display='none'">Cancelar</button>
+            <button id="btnConfirmRebirth" data-i18n="btn_accept_rebirth" class="confirm-btn" onclick="doRebirth()">ACEPTAR TÍTULO</button>
+            <button class="confirm-btn" data-i18n="btn_cancel" style="background:transparent; border:1px solid #475569; color:#94a3b8; margin-top:10px; padding: 12px;" onclick="document.getElementById('rebirthModal').style.display='none'">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- MODAL DE DECORACIÓN -->
+    <div id="decorationModal" class="modal-overlay">
+        <div class="modal-content" style="border: 2px solid #a855f7;">
+            <h2 data-i18n="modal_deco_title" style="color:#a855f7; margin-top:0;">🎨 PERSONALIZAR</h2>
+            
+            <p data-i18n="modal_deco_colors" style="margin-top:15px; color:#cbd5e1; font-weight: bold; text-align: left; font-size: 0.9rem;">Colores de Energía</p>
+            <div class="option-grid">
+                <button class="option-btn" onclick="applyColor('theme-default')" style="background: #2563eb;">Azul</button>
+                <button class="option-btn" onclick="applyColor('theme-purple')" style="background: #9333ea;">Morado</button>
+                <button class="option-btn" onclick="applyColor('theme-gold')" style="background: #eab308; color: black;">Oro</button>
+                <button class="option-btn" onclick="applyColor('theme-red')" style="background: #dc2626;">Rojo</button>
+            </div>
+
+            <p data-i18n="modal_deco_icons" style="margin-top:15px; color:#cbd5e1; font-weight: bold; text-align: left; font-size: 0.9rem;">Iconos</p>
+            <div class="option-grid">
+                <button class="option-btn" onclick="applyIcon('🧠')">🧠</button>
+                <button class="option-btn" onclick="applyIcon('⚛️')">⚛️</button>
+                <button class="option-btn" onclick="applyIcon('👽')">👽</button>
+                <button class="option-btn" onclick="applyIcon('💻')">💻</button>
+            </div>
+            
+            <button class="confirm-btn" data-i18n="btn_close" style="background:transparent; border:1px solid #475569; color:#94a3b8; margin-top:20px; padding: 12px;" onclick="document.getElementById('decorationModal').style.display='none'">Cerrar</button>
+        </div>
+    </div>
+
+    <!-- MODAL DE AJUSTES -->
+    <div id="settingsModal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 data-i18n="modal_settings_title" style="color:white; margin-top:0;">⚙️ AJUSTES</h2>
+            
+            <select id="languageSelect" class="lang-select" onchange="changeLanguage(this.value)">
+                <option value="es">🇪🇸 Español</option>
+                <option value="en">🇺🇸 English</option>
+                <option value="fr">🇫🇷 Français</option>
+                <option value="de">🇩🇪 Deutsch</option>
+                <option value="it">🇮🇹 Italiano</option>
+                <option value="ar">🇸🇦 العربية</option>
+                <option value="ru">🇷🇺 Русский</option>
+                <option value="zh">🇨🇳 中文</option>
+                <option value="ja">🇯🇵 日本語</option>
+            </select>
+
+            <button class="confirm-btn" data-i18n="btn_save" style="background: var(--primary); color: white;" onclick="manualSave()">💾 GUARDAR PARTIDA</button>
+            <button class="danger-btn" data-i18n="btn_reset" onclick="resetGame()">🗑️ BORRAR DATOS (RESET)</button>
+            
+            <button class="confirm-btn" data-i18n="btn_close" style="background:transparent; border:1px solid #475569; color:#94a3b8; margin-top:20px; padding: 12px;" onclick="document.getElementById('settingsModal').style.display='none'">Cerrar</button>
         </div>
     </div>
 
     <script>
-        // CONFIGURACIÓN DE MEJORAS
+        // --- SISTEMA DE TRADUCCIÓN ---
+        const TRANSLATIONS = {
+            es: {
+                btn_rebirth: "🎓 GRADUARSE",
+                btn_challenge: "🎁 DESAFÍO (+25%)",
+                btn_decoration: "🎨 DECORACIÓN",
+                score_iq: "IQ",
+                rate_suffix: "IQ/seg",
+                frenzy_label: "⚡ FLOW STATE: x2 BONUS ⚡",
+                btn_study: "ESTUDIAR",
+                shop_title: "📚 Librería",
+                section_click: "Mejoras de Click",
+                section_auto: "Mejoras Automáticas",
+                modal_math_title: "Desafío Rápido",
+                modal_rebirth_title: "🎓 GRADUACIÓN",
+                modal_rebirth_desc: "Reinicia tu IQ y mejoras actuales para obtener un multiplicador permanente.",
+                lbl_current_bonus: "Bonus Actual:",
+                lbl_new_bonus: "Nuevo Bonus:",
+                lbl_req: "Requisito:",
+                btn_accept_rebirth: "ACEPTAR TÍTULO",
+                btn_cancel: "Cancelar",
+                modal_settings_title: "⚙️ AJUSTES",
+                modal_deco_title: "🎨 PERSONALIZAR",
+                modal_deco_colors: "Colores de Energía",
+                modal_deco_icons: "Iconos",
+                btn_save: "💾 GUARDAR PARTIDA",
+                btn_reset: "🗑️ BORRAR DATOS (RESET)",
+                btn_close: "Cerrar",
+                toast_saved: "Partida Guardada ✅",
+                toast_error: "Error al guardar ❌",
+                msg_deco_unlocked: "¡MENÚ DE DECORACIÓN DESBLOQUEADO! 🎉",
+                alert_reset: "¿Estás seguro? Esto borrará TODO tu progreso, incluyendo renacimientos. No se puede deshacer.",
+                msg_insufficient: "IQ INSUFICIENTE",
+                msg_graduated: "GRADUADO!",
+                msg_excellent: "EXCELENTE!",
+                unit_click: "Click",
+                unit_sec: "IQ/s"
+            },
+            en: {
+                btn_rebirth: "🎓 GRADUATE",
+                btn_challenge: "🎁 CHALLENGE (+25%)",
+                btn_decoration: "🎨 DECORATION",
+                score_iq: "IQ",
+                rate_suffix: "IQ/sec",
+                frenzy_label: "⚡ FLOW STATE: x2 BONUS ⚡",
+                btn_study: "STUDY",
+                shop_title: "📚 Library",
+                section_click: "Click Upgrades",
+                section_auto: "Auto Upgrades",
+                modal_math_title: "Quick Challenge",
+                modal_rebirth_title: "🎓 GRADUATION",
+                modal_rebirth_desc: "Reset your IQ and upgrades to gain a permanent multiplier.",
+                lbl_current_bonus: "Current Bonus:",
+                lbl_new_bonus: "New Bonus:",
+                lbl_req: "Requirement:",
+                btn_accept_rebirth: "ACCEPT DEGREE",
+                btn_cancel: "Cancel",
+                modal_settings_title: "⚙️ SETTINGS",
+                modal_deco_title: "🎨 CUSTOMIZE",
+                modal_deco_colors: "Energy Colors",
+                modal_deco_icons: "Icons",
+                btn_save: "💾 SAVE GAME",
+                btn_reset: "🗑️ RESET DATA",
+                btn_close: "Close",
+                toast_saved: "Game Saved ✅",
+                toast_error: "Save Error ❌",
+                msg_deco_unlocked: "DECORATION MENU UNLOCKED! 🎉",
+                alert_reset: "Are you sure? This will delete ALL progress, including rebirths. Cannot be undone.",
+                msg_insufficient: "INSUFFICIENT IQ",
+                msg_graduated: "GRADUATED!",
+                msg_excellent: "EXCELLENT!",
+                unit_click: "Click",
+                unit_sec: "IQ/s"
+            },
+            fr: {
+                btn_rebirth: "🎓 DIPLÔME",
+                btn_challenge: "🎁 DÉFI (+25%)",
+                btn_decoration: "🎨 DÉCORATION",
+                score_iq: "QI",
+                rate_suffix: "QI/sec",
+                frenzy_label: "⚡ ÉTAT DE FLUX: x2 BONUS ⚡",
+                btn_study: "ÉTUDIER",
+                shop_title: "📚 Librairie",
+                section_click: "Améliorations Clic",
+                section_auto: "Améliorations Auto",
+                modal_math_title: "Défi Rapide",
+                modal_rebirth_title: "🎓 REMISE DE DIPLÔME",
+                modal_rebirth_desc: "Réinitialisez votre QI et améliorations pour un multiplicateur permanent.",
+                lbl_current_bonus: "Bonus Actuel:",
+                lbl_new_bonus: "Nouveau Bonus:",
+                lbl_req: "Requis:",
+                btn_accept_rebirth: "ACCEPTER",
+                btn_cancel: "Annuler",
+                modal_settings_title: "⚙️ PARAMÈTRES",
+                modal_deco_title: "🎨 PERSONNALISER",
+                modal_deco_colors: "Couleurs",
+                modal_deco_icons: "Icônes",
+                btn_save: "💾 SAUVEGARDER",
+                btn_reset: "🗑️ RÉINITIALISER",
+                btn_close: "Fermer",
+                toast_saved: "Sauvegardé ✅",
+                toast_error: "Erreur ❌",
+                msg_deco_unlocked: "MENU DÉCORATION DÉBLOQUÉ! 🎉",
+                alert_reset: "Êtes-vous sûr ? Cela effacera TOUT progrès. Irréversible.",
+                msg_insufficient: "QI INSUFFISANT",
+                msg_graduated: "DIPLÔMÉ!",
+                msg_excellent: "EXCELLENT!",
+                unit_click: "Clic",
+                unit_sec: "QI/s"
+            },
+            de: {
+                btn_rebirth: "🎓 ABSCHLUSS",
+                btn_challenge: "🎁 CHALLENGE (+25%)",
+                btn_decoration: "🎨 DEKORATION",
+                score_iq: "IQ",
+                rate_suffix: "IQ/sek",
+                frenzy_label: "⚡ FLOW STATE: x2 BONUS ⚡",
+                btn_study: "LERNEN",
+                shop_title: "📚 Bibliothek",
+                section_click: "Klick-Upgrades",
+                section_auto: "Auto-Upgrades",
+                modal_math_title: "Schnelle Herausforderung",
+                modal_rebirth_title: "🎓 ABSCHLUSSFEIER",
+                modal_rebirth_desc: "Setze IQ und Upgrades zurück für dauerhaften Multiplikator.",
+                lbl_current_bonus: "Aktueller Bonus:",
+                lbl_new_bonus: "Neuer Bonus:",
+                lbl_req: "Bedarf:",
+                btn_accept_rebirth: "ABSCHLUSS ANNEHMEN",
+                btn_cancel: "Abbrechen",
+                modal_settings_title: "⚙️ EINSTELLUNGEN",
+                modal_deco_title: "🎨 ANPASSEN",
+                modal_deco_colors: "Farben",
+                modal_deco_icons: "Symbole",
+                btn_save: "💾 SPIEL SPEICHERN",
+                btn_reset: "🗑️ DATEN LÖSCHEN",
+                btn_close: "Schließen",
+                toast_saved: "Gespeichert ✅",
+                toast_error: "Fehler ❌",
+                msg_deco_unlocked: "DEKORATIONSMENÜ FREIGESCHALTET! 🎉",
+                alert_reset: "Bist du sicher? Dies löscht ALLEN Fortschritt. Kann nicht rückgängig gemacht werden.",
+                msg_insufficient: "IQ UNZUREICHEND",
+                msg_graduated: "ABSOLVIERT!",
+                msg_excellent: "AUSGEZEICHNET!",
+                unit_click: "Klick",
+                unit_sec: "IQ/s"
+            },
+            it: {
+                btn_rebirth: "🎓 LAUREA",
+                btn_challenge: "🎁 SFIDA (+25%)",
+                btn_decoration: "🎨 DECORAZIONE",
+                score_iq: "QI",
+                rate_suffix: "QI/sec",
+                frenzy_label: "⚡ STATO DI FLUSSO: x2 BONUS ⚡",
+                btn_study: "STUDIARE",
+                shop_title: "📚 Biblioteca",
+                section_click: "Potenziamenti Click",
+                section_auto: "Potenziamenti Auto",
+                modal_math_title: "Sfida Rapida",
+                modal_rebirth_title: "🎓 CERIMONIA LAUREA",
+                modal_rebirth_desc: "Resetta QI e potenziamenti per un moltiplicatore permanente.",
+                lbl_current_bonus: "Bonus Attuale:",
+                lbl_new_bonus: "Nuovo Bonus:",
+                lbl_req: "Requisito:",
+                btn_accept_rebirth: "ACCETTA LAUREA",
+                btn_cancel: "Annulla",
+                modal_settings_title: "⚙️ IMPOSTAZIONI",
+                modal_deco_title: "🎨 PERSONALIZZA",
+                modal_deco_colors: "Colori",
+                modal_deco_icons: "Icone",
+                btn_save: "💾 SALVA GIOCO",
+                btn_reset: "🗑️ RESETTA DATI",
+                btn_close: "Chiudi",
+                toast_saved: "Salvato ✅",
+                toast_error: "Errore ❌",
+                msg_deco_unlocked: "MENU DECORAZIONE SBLOCCATO! 🎉",
+                alert_reset: "Sei sicuro? Questo cancellerà TUTTI i progressi. Non annullabile.",
+                msg_insufficient: "QI INSUFFICIENTE",
+                msg_graduated: "LAUREATO!",
+                msg_excellent: "ECCELLENTE!",
+                unit_click: "Click",
+                unit_sec: "QI/s"
+            },
+            ar: {
+                btn_rebirth: "🎓 تخرج",
+                btn_challenge: "🎁 تحدي (+25%)",
+                btn_decoration: "🎨 وسام",
+                score_iq: "IQ",
+                rate_suffix: "IQ/ثانية",
+                frenzy_label: "⚡ حالة التدفق: x2 مكافأة ⚡",
+                btn_study: "دراسة",
+                shop_title: "📚 المكتبة",
+                section_click: "ترقيات النقر",
+                section_auto: "ترقيات تلقائية",
+                modal_math_title: "تحدي سريع",
+                modal_rebirth_title: "🎓 حفل تخرج",
+                modal_rebirth_desc: "أعد تعيين ذكائك وترقياتك للحصول على مضاعف دائم.",
+                lbl_current_bonus: "المكافأة الحالية:",
+                lbl_new_bonus: "مكافأة جديدة:",
+                lbl_req: "المتطلبات:",
+                btn_accept_rebirth: "استلم الشهادة",
+                btn_cancel: "إلغاء",
+                modal_settings_title: "⚙️ إعدادات",
+                modal_deco_title: "🎨 تخصيص",
+                modal_deco_colors: "الألوان",
+                modal_deco_icons: "أيقونات",
+                btn_save: "💾 حفظ اللعبة",
+                btn_reset: "🗑️ إعادة تعيين البيانات",
+                btn_close: "إغلاق",
+                toast_saved: "تم الحفظ ✅",
+                toast_error: "خطأ في الحفظ ❌",
+                msg_deco_unlocked: "تم فتح قائمة الزخرفة! 🎉",
+                alert_reset: "هل أنت متأكد؟ سيؤدي هذا إلى مسح كل التقدم. لا يمكن التراجع.",
+                msg_insufficient: "IQ غير كافٍ",
+                msg_graduated: "تخرجت!",
+                msg_excellent: "ممتاز!",
+                unit_click: "نقر",
+                unit_sec: "IQ/ث"
+            },
+            ru: {
+                btn_rebirth: "🎓 ВЫПУСК",
+                btn_challenge: "🎁 ВЫЗОВ (+25%)",
+                btn_decoration: "🎨 ОФОРМЛЕНИЕ",
+                score_iq: "IQ",
+                rate_suffix: "IQ/сек",
+                frenzy_label: "⚡ ПОТОК: x2 БОНУС ⚡",
+                btn_study: "УЧИТЬСЯ",
+                shop_title: "📚 Библиотека",
+                section_click: "Улучшения Клика",
+                section_auto: "Авто-Улучшения",
+                modal_math_title: "Быстрый Вызов",
+                modal_rebirth_title: "🎓 ВЫПУСКНОЙ",
+                modal_rebirth_desc: "Сбросьте IQ и улучшения для постоянного множителя.",
+                lbl_current_bonus: "Тек. Бонус:",
+                lbl_new_bonus: "Нов. Бонус:",
+                lbl_req: "Требуется:",
+                btn_accept_rebirth: "ПОЛУЧИТЬ",
+                btn_cancel: "Отмена",
+                modal_settings_title: "⚙️ НАСТРОЙКИ",
+                modal_deco_title: "🎨 НАСТРОЙКА",
+                modal_deco_colors: "Цвета",
+                modal_deco_icons: "Иконки",
+                btn_save: "💾 СОХРАНИТЬ",
+                btn_reset: "🗑️ СБРОСИТЬ",
+                btn_close: "Закрыть",
+                toast_saved: "Сохранено ✅",
+                toast_error: "Ошибка ❌",
+                msg_deco_unlocked: "МЕНЮ ОФОРМЛЕНИЯ РАЗБЛОКИРОВАНО! 🎉",
+                alert_reset: "Вы уверены? Это удалит ВЕСЬ прогресс. Необратимо.",
+                msg_insufficient: "МАЛО IQ",
+                msg_graduated: "ВЫПУСКНИК!",
+                msg_excellent: "ОТЛИЧНО!",
+                unit_click: "Клик",
+                unit_sec: "IQ/с"
+            },
+            zh: {
+                btn_rebirth: "🎓 毕业",
+                btn_challenge: "🎁 挑战 (+25%)",
+                btn_decoration: "🎨 装饰",
+                score_iq: "智商",
+                rate_suffix: "智商/秒",
+                frenzy_label: "⚡ 心流状态: x2 加成 ⚡",
+                btn_study: "学习",
+                shop_title: "📚 图书馆",
+                section_click: "点击升级",
+                section_auto: "自动升级",
+                modal_math_title: "快速挑战",
+                modal_rebirth_title: "🎓 毕业典礼",
+                modal_rebirth_desc: "重置智商和升级以获得永久倍率。",
+                lbl_current_bonus: "当前加成:",
+                lbl_new_bonus: "新加成:",
+                lbl_req: "要求:",
+                btn_accept_rebirth: "接受学位",
+                btn_cancel: "取消",
+                modal_settings_title: "⚙️ 设置",
+                modal_deco_title: "🎨 定制",
+                modal_deco_colors: "颜色",
+                modal_deco_icons: "图标",
+                btn_save: "💾 保存游戏",
+                btn_reset: "🗑️ 重置数据",
+                btn_close: "关闭",
+                toast_saved: "已保存 ✅",
+                toast_error: "保存失败 ❌",
+                msg_deco_unlocked: "装饰菜单已解锁！ 🎉",
+                alert_reset: "确定吗？这将删除所有进度。无法撤销。",
+                msg_insufficient: "智商不足",
+                msg_graduated: "毕业了!",
+                msg_excellent: "太棒了!",
+                unit_click: "点击",
+                unit_sec: "智商/秒"
+            },
+            ja: {
+                btn_rebirth: "🎓 卒業",
+                btn_challenge: "🎁 挑戦 (+25%)",
+                btn_decoration: "🎨 装飾",
+                score_iq: "IQ",
+                rate_suffix: "IQ/秒",
+                frenzy_label: "⚡ フロー状態: x2 ボーナス ⚡",
+                btn_study: "勉強する",
+                shop_title: "📚 図書館",
+                section_click: "クリック強化",
+                section_auto: "自動強化",
+                modal_math_title: "クイック挑戦",
+                modal_rebirth_title: "🎓 卒業式",
+                modal_rebirth_desc: "IQと強化をリセットして、永続的な倍率を獲得します。",
+                lbl_current_bonus: "現在のボーナス:",
+                lbl_new_bonus: "新しいボーナス:",
+                lbl_req: "要件:",
+                btn_accept_rebirth: "学位を受け取る",
+                btn_cancel: "キャンセル",
+                modal_settings_title: "⚙️ 設定",
+                modal_deco_title: "🎨 カスタマイズ",
+                modal_deco_colors: "色",
+                modal_deco_icons: "アイコン",
+                btn_save: "💾 セーブ",
+                btn_reset: "🗑️ データ削除",
+                btn_close: "閉じる",
+                toast_saved: "保存しました ✅",
+                toast_error: "エラー ❌",
+                msg_deco_unlocked: "装飾メニューがアンロックされました！ 🎉",
+                alert_reset: "本当によろしいですか？すべての進行状況が削除されます。",
+                msg_insufficient: "IQ不足",
+                msg_graduated: "卒業！",
+                msg_excellent: "素晴らしい！",
+                unit_click: "クリック",
+                unit_sec: "IQ/秒"
+            }
+        };
+
+        const UPGRADE_NAMES = {
+            c1: { es:"Lápiz HB", en:"Pencil HB", fr:"Crayon HB", de:"Bleistift HB", it:"Matita HB", ar:"قلم رصاص HB", ru:"Карандаш", zh:"HB铅笔", ja:"HB鉛筆" },
+            c2: { es:"Subrayador", en:"Highlighter", fr:"Surligneur", de:"Textmarker", it:"Evidenziatore", ar:"قلم تمييز", ru:"Маркер", zh:"荧光笔", ja:"蛍光ペン" },
+            c3: { es:"Regla T", en:"T-Square", fr:"Règle en T", de:"Reißschiene", it:"Riga a T", ar:"مسطرة T", ru:"Рейсшина", zh:"丁字尺", ja:"T定規" },
+            c4: { es:"Calculadora", en:"Calculator", fr:"Calculatrice", de:"Taschenrechner", it:"Calcolatrice", ar:"آلة حاسبة", ru:"Калькулятор", zh:"计算器", ja:"電卓" },
+            c5: { es:"Libro Fórmulas", en:"Formula Book", fr:"Livre Formules", de:"Formelbuch", it:"Formulario", ar:"كتاب المعادلات", ru:"Справочник", zh:"公式书", ja:"公式集" },
+            c6: { es:"Microscopio", en:"Microscope", fr:"Microscope", de:"Mikroskop", it:"Microscopio", ar:"مجهر", ru:"Микроскоп", zh:"显微镜", ja:"顕微鏡" },
+            c7: { es:"Superordenador", en:"Supercomputer", fr:"Superordi", de:"Supercomputer", it:"Supercomputer", ar:"حاسوب فائق", ru:"Суперкомпьютер", zh:"超级计算机", ja:"スパコン" },
+            c8: { es:"Chip Cognitivo", en:"Cognitive Chip", fr:"Puce Cognitive", de:"Kognitiver Chip", it:"Chip Cognitivo", ar:"شريحة معرفية", ru:"Нейрочип", zh:"认知芯片", ja:"認知チップ" },
+            c9: { es:"Enlace Neural", en:"Neural Link", fr:"Lien Neural", de:"Neuraler Link", it:"Link Neurale", ar:"رابط عصبي", ru:"Нейролинк", zh:"神经连接", ja:"ニューラルリンク" },
+            c10: { es:"ADN Sintético", en:"Synthetic DNA", fr:"ADN Synthétique", de:"Synthetische DNA", it:"DNA Sintetico", ar:"حمض نووي صناعي", ru:"Синт. ДНК", zh:"合成DNA", ja:"合成DNA" },
+            c11: { es:"IA Predictiva", en:"Predictive AI", fr:"IA Prédictive", de:"Prädiktive KI", it:"IA Predittiva", ar:"ذكاء اصطناعي تنبؤي", ru:"ИИ Предиктор", zh:"预测AI", ja:"预测AI" },
+            c12: { es:"Nube Mental", en:"Mind Cloud", fr:"Nuage Mental", de:"Gedankenwolke", it:"Cloud Mentale", ar:"سحابة العقل", ru:"Облако Разума", zh:"思维云", ja:"マインドクラウド" },
+            c13: { es:"Qubits Orgánicos", en:"Organic Qubits", fr:"Qubits Organiques", de:"Organische Qubits", it:"Qubit Organici", ar:"كيوبت عضوي", ru:"Орг. Кубиты", zh:"有机量子比特", ja:"有機量子ビット" },
+            c14: { es:"Cerebro Matriz", en:"Matrix Brain", fr:"Cerveau Matrice", de:"Matrix-Gehirn", it:"Cervello Matrix", ar:"دماغ المصفوفة", ru:"Матрица Мозга", zh:"矩阵大脑", ja:"マトリックス脳" },
+            c15: { es:"Omnisciencia", en:"Omniscience", fr:"Omniscience", de:"Allwissenheit", it:"Onniscienza", ar:"كلية المعرفة", ru:"Всеведение", zh:"全知全能", ja:"全知全能" },
+            c16: { es:"Salto Cuántico", en:"Quantum Leap", fr:"Saut Quantique", de:"Quantensprung", it:"Salto Quantico", ar:"قفزة كمية", ru:"Квантовый Скачок", zh:"量子飞跃", ja:"量子跳躍" },
+            c17: { es:"Teoría de Cuerdas", en:"String Theory", fr:"Théorie Cordes", de:"Stringtheorie", it:"Teoria Stringhe", ar:"نظرية الأوتار", ru:"Теория Струн", zh:"弦理论", ja:"弦理論" },
+            c18: { es:"Materia Oscura", en:"Dark Matter", fr:"Matière Noire", de:"Dunkle Materie", it:"Materia Oscura", ar:"مادة مظلمة", ru:"Темная Материя", zh:"暗物质", ja:"暗黒物質" },
+            c19: { es:"Control Tiempo", en:"Time Control", fr:"Contrôle Temps", de:"Zeitkontrolle", it:"Controllo Tempo", ar:"التحكم بالوقت", ru:"Контроль Времени", zh:"时间控制", ja:"時間操作" },
+            c20: { es:"Ecuación Divina", en:"God Equation", fr:"Équation Divine", de:"Gottesgleichung", it:"Equazione Divina", ar:"معادلة الإله", ru:"Божье Уравнение", zh:"神之方程", ja:"神の方程式" },
+
+            a1: { es:"Notas Adhesivas", en:"Sticky Notes", fr:"Post-it", de:"Haftnotizen", it:"Note Adesive", ar:"ملاحظات لاصقة", ru:"Стикеры", zh:"便利贴", ja:"付箋" },
+            a2: { es:"Apuntes Prestados", en:"Borrowed Notes", fr:"Notes Empruntées", de:"Geliehene Notizen", it:"Appunti Presi", ar:"ملاحظات مستعارة", ru:"Чужие Конспекты", zh:"借来的笔记", ja:"借りたノート" },
+            a3: { es:"Grupo de Estudio", en:"Study Group", fr:"Groupe d'Étude", de:"Lerngruppe", it:"Gruppo Studio", ar:"مجموعة دراسة", ru:"Учебная Группа", zh:"学习小组", ja:"勉強会" },
+            a4: { es:"Tutor Privado", en:"Private Tutor", fr:"Tuteur Privé", de:"Privatlehrer", it:"Tutor Privato", ar:"مدرس خصوصي", ru:"Репетитор", zh:"私人导师", ja:"家庭教師" },
+            a5: { es:"Curso Online", en:"Online Course", fr:"Cours en Ligne", de:"Online-Kurs", it:"Corso Online", ar:"دورة عبر الإنترنت", ru:"Онлайн Курс", zh:"在线课程", ja:"オンライン講座" },
+            a6: { es:"Biblioteca", en:"Library", fr:"Bibliothèque", de:"Bibliothek", it:"Biblioteca", ar:"مكتبة", ru:"Библиотека", zh:"图书馆", ja:"図書館" },
+            a7: { es:"Centro I+D", en:"R&D Center", fr:"Centre R&D", de:"F&E-Zentrum", it:"Centro R&S", ar:"مركز بحث وتطوير", ru:"Центр R&D", zh:"研发中心", ja:"研究開発センター" },
+            a8: { es:"Laboratorio Alfa", en:"Alpha Lab", fr:"Labo Alpha", de:"Alpha-Labor", it:"Laboratorio Alpha", ar:"مختبر ألفا", ru:"Лаборатория Альфа", zh:"阿尔法实验室", ja:"アルファラボ" },
+            a9: { es:"Uni Global", en:"Global Uni", fr:"Uni Globale", de:"Globale Uni", it:"Uni Globale", ar:"جامعة عالمية", ru:"Глоб. Универ", zh:"全球大学", ja:"グローバル大学" },
+            a10: { es:"Santuario Zen", en:"Zen Sanctuary", fr:"Sanctuaire Zen", de:"Zen-Heiligtum", it:"Santuario Zen", ar:"ملاذ الزن", ru:"Дзен Святилище", zh:"禅宗圣所", ja:"禅の聖域" },
+            a11: { es:"Colisionador", en:"Collider", fr:"Collisionneur", de:"Teilchenbeschleuniger", it:"Collisore", ar:"مصادم", ru:"Коллайдер", zh:"对撞机", ja:"衝突型加速器" },
+            a12: { es:"Satélite Edu", en:"Edu Satellite", fr:"Satellite Édu", de:"Bildungssatellit", it:"Satellite Edu", ar:"قمر تعليمي", ru:"Спутник Образования", zh:"教育卫星", ja:"教育衛星" },
+            a13: { es:"Academia Espacial", en:"Space Academy", fr:"Académie Spatiale", de:"Weltraumakademie", it:"Accademia Spaziale", ar:"أكاديمية الفضاء", ru:"Косм. Академия", zh:"太空学院", ja:"宇宙アカデミー" },
+            a14: { es:"Mente Enjambre", en:"Hive Mind", fr:"Esprit de Ruche", de:"Schwarmintelligenz", it:"Mente Alveare", ar:"عقل الخلية", ru:"Рой Разума", zh:"蜂巢思维", ja:"ハイヴマインド" },
+            a15: { es:"Simulación Total", en:"Full Sim", fr:"Simu Totale", de:"Vollsimulation", it:"Simulazione Totale", ar:"محاكاة كاملة", ru:"Полная Симуляция", zh:"全息模拟", ja:"完全シミュレーション" },
+            a16: { es:"Universo Bolsillo", en:"Pocket Universe", fr:"Univers Poche", de:"Taschenuniversum", it:"Universo Tascabile", ar:"كون الجيب", ru:"Карманная Вселенная", zh:"口袋宇宙", ja:"ポケット宇宙" },
+            a17: { es:"Red Multiversal", en:"Multiverse Net", fr:"Réseau Multivers", de:"Multiversum-Netz", it:"Rete Multiverso", ar:"شبكة الأكوان المتعددة", ru:"Сеть Мультивселенной", zh:"多元宇宙网", ja:"多元宇宙ネット" },
+            a18: { es:"Civilización V", en:"Civilization V", fr:"Civilisation V", de:"Zivilisation V", it:"Civiltà V", ar:"الحضارة V", ru:"Цивилизация V", zh:"五级文明", ja:"文明レベルV" },
+            a19: { es:"Matemática Pura", en:"Pure Math", fr:"Maths Pures", de:"Reine Mathematik", it:"Matematica Pura", ar:"رياضيات بحتة", ru:"Чистая Математика", zh:"纯数学", ja:"純粋数学" },
+            a20: { es:"El Programador", en:"The Coder", fr:"Le Codeur", de:"Der Programmierer", it:"Il Programmatore", ar:"المبرمج", ru:"Программист", zh:"程序员", ja:"ザ・コーダー" }
+        };
+
         const PRICE_SCALE = 1.14;
 
+        // Configuración Base
         const upgradesConfig = [
-            // --- CLICK UPGRADES ---
-            { id: 'c1', type: 'click', name: 'Lápiz HB', icon: '✏️', basePrice: 15, power: 1 },
-            { id: 'c2', type: 'click', name: 'Subrayador', icon: '🖍️', basePrice: 80, power: 5 },
-            { id: 'c3', type: 'click', name: 'Regla T', icon: '📏', basePrice: 350, power: 15 },
-            { id: 'c4', type: 'click', name: 'Calculadora', icon: '📟', basePrice: 1200, power: 40 },
-            { id: 'c5', type: 'click', name: 'Libro Fórmulas', icon: '📘', basePrice: 5000, power: 100 },
-            { id: 'c6', type: 'click', name: 'Microscopio', icon: '🔬', basePrice: 20000, power: 300 },
-            { id: 'c7', type: 'click', name: 'Superordenador', icon: '🖥️', basePrice: 80000, power: 1000 },
-            { id: 'c8', type: 'click', name: 'Chip Cognitivo', icon: '💾', basePrice: 350000, power: 4500 },
-            { id: 'c9', type: 'click', name: 'Enlace Neural', icon: '🔗', basePrice: 1500000, power: 12000 },
-            { id: 'c10', type: 'click', name: 'ADN Sintético', icon: '🧬', basePrice: 8000000, power: 35000 },
-            { id: 'c11', type: 'click', name: 'IA Predictiva', icon: '🤖', basePrice: 50000000, power: 100000 },
-            { id: 'c12', type: 'click', name: 'Nube Mental', icon: '☁️', basePrice: 300000000, power: 450000 },
-            { id: 'c13', type: 'click', name: 'Qubits Orgánicos', icon: '💠', basePrice: 1500000000, power: 1500000 },
-            { id: 'c14', type: 'click', name: 'Cerebro Matriz', icon: '🌐', basePrice: 10000000000, power: 5000000 },
-            { id: 'c15', type: 'click', name: 'Omnisciencia', icon: '👁️', basePrice: 80000000000, power: 20000000 },
-            // NUEVOS CLICK
-            { id: 'c16', type: 'click', name: 'Salto Cuántico', icon: '💫', basePrice: 500000000000, power: 150000000 },
-            { id: 'c17', type: 'click', name: 'Teoría de Cuerdas', icon: '🎻', basePrice: 3500000000000, power: 800000000 },
-            { id: 'c18', type: 'click', name: 'Materia Oscura', icon: '⚫', basePrice: 25000000000000, power: 5000000000 },
-            { id: 'c19', type: 'click', name: 'Control Tiempo', icon: '⏳', basePrice: 200000000000000, power: 45000000000 },
-            { id: 'c20', type: 'click', name: 'Ecuación Divina', icon: '🔱', basePrice: 2000000000000000, power: 500000000000 },
+            { id: 'c1', type: 'click', icon: '✏️', basePrice: 15, power: 1 },
+            { id: 'c2', type: 'click', icon: '🖍️', basePrice: 80, power: 5 },
+            { id: 'c3', type: 'click', icon: '📏', basePrice: 350, power: 15 },
+            { id: 'c4', type: 'click', icon: '📟', basePrice: 1200, power: 40 },
+            { id: 'c5', type: 'click', icon: '📘', basePrice: 5000, power: 100 },
+            { id: 'c6', type: 'click', icon: '🔬', basePrice: 20000, power: 300 },
+            { id: 'c7', type: 'click', icon: '🖥️', basePrice: 80000, power: 1000 },
+            { id: 'c8', type: 'click', icon: '💾', basePrice: 350000, power: 4500 },
+            { id: 'c9', type: 'click', icon: '🔗', basePrice: 1500000, power: 12000 },
+            { id: 'c10', type: 'click', icon: '🧬', basePrice: 8000000, power: 35000 },
+            { id: 'c11', type: 'click', icon: '🤖', basePrice: 50000000, power: 100000 },
+            { id: 'c12', type: 'click', icon: '☁️', basePrice: 300000000, power: 450000 },
+            { id: 'c13', type: 'click', icon: '💠', basePrice: 1500000000, power: 1500000 },
+            { id: 'c14', type: 'click', icon: '🌐', basePrice: 10000000000, power: 5000000 },
+            { id: 'c15', type: 'click', icon: '👁️', basePrice: 80000000000, power: 20000000 },
+            { id: 'c16', type: 'click', icon: '💫', basePrice: 500000000000, power: 150000000 },
+            { id: 'c17', type: 'click', icon: '🎻', basePrice: 3500000000000, power: 800000000 },
+            { id: 'c18', type: 'click', icon: '⚫', basePrice: 25000000000000, power: 5000000000 },
+            { id: 'c19', type: 'click', icon: '⏳', basePrice: 200000000000000, power: 45000000000 },
+            { id: 'c20', type: 'click', icon: '🔱', basePrice: 2000000000000000, power: 500000000000 },
 
-            // --- AUTO UPGRADES ---
-            { id: 'a1', type: 'auto', name: 'Notas Adhesivas', icon: '🗒️', basePrice: 25, power: 1 },
-            { id: 'a2', type: 'auto', name: 'Apuntes Prestados', icon: '📑', basePrice: 200, power: 5 },
-            { id: 'a3', type: 'auto', name: 'Grupo de Estudio', icon: '👥', basePrice: 1100, power: 18 },
-            { id: 'a4', type: 'auto', name: 'Tutor Privado', icon: '👨‍🏫', basePrice: 5000, power: 60 },
-            { id: 'a5', type: 'auto', name: 'Curso Online', icon: '💻', basePrice: 25000, power: 250 },
-            { id: 'a6', type: 'auto', name: 'Biblioteca', icon: '🏛️', basePrice: 120000, power: 1000 },
-            { id: 'a7', type: 'auto', name: 'Centro I+D', icon: '🏢', basePrice: 600000, power: 4500 },
-            { id: 'a8', type: 'auto', name: 'Laboratorio Alfa', icon: '⚗️', basePrice: 3500000, power: 20000 },
-            { id: 'a9', type: 'auto', name: 'Uni Global', icon: '🎓', basePrice: 20000000, power: 85000 },
-            { id: 'a10', type: 'auto', name: 'Santuario Zen', icon: '🧘', basePrice: 150000000, power: 350000 },
-            { id: 'a11', type: 'auto', name: 'Colisionador', icon: '⚛️', basePrice: 800000000, power: 1500000 },
-            { id: 'a12', type: 'auto', name: 'Satélite Edu', icon: '🛰️', basePrice: 5000000000, power: 6000000 },
-            { id: 'a13', type: 'auto', name: 'Academia Espacial', icon: '🪐', basePrice: 40000000000, power: 25000000 },
-            { id: 'a14', type: 'auto', name: 'Mente Enjambre', icon: '🧠', basePrice: 350000000000, power: 120000000 },
-            { id: 'a15', type: 'auto', name: 'Simulación Total', icon: '🌌', basePrice: 3000000000000, power: 600000000 },
-            // NUEVOS AUTO
-            { id: 'a16', type: 'auto', name: 'Universo Bolsillo', icon: '🔮', basePrice: 35000000000000, power: 3000000000 },
-            { id: 'a17', type: 'auto', name: 'Red Multiversal', icon: '🕸️', basePrice: 400000000000000, power: 20000000000 },
-            { id: 'a18', type: 'auto', name: 'Civilización V', icon: '🛸', basePrice: 5000000000000000, power: 150000000000 },
-            { id: 'a19', type: 'auto', name: 'Matemática Pura', icon: '♾️', basePrice: 70000000000000000, power: 800000000000 },
-            { id: 'a20', type: 'auto', name: 'El Programador', icon: '👨‍💻', basePrice: 999000000000000000, power: 5000000000000 },
+            { id: 'a1', type: 'auto', icon: '🗒️', basePrice: 25, power: 1 },
+            { id: 'a2', type: 'auto', icon: '📑', basePrice: 200, power: 5 },
+            { id: 'a3', type: 'auto', icon: '👥', basePrice: 1100, power: 18 },
+            { id: 'a4', type: 'auto', icon: '👨‍🏫', basePrice: 5000, power: 60 },
+            { id: 'a5', type: 'auto', icon: '💻', basePrice: 25000, power: 250 },
+            { id: 'a6', type: 'auto', icon: '🏛️', basePrice: 120000, power: 1000 },
+            { id: 'a7', type: 'auto', icon: '🏢', basePrice: 600000, power: 4500 },
+            { id: 'a8', type: 'auto', icon: '⚗️', basePrice: 3500000, power: 20000 },
+            { id: 'a9', type: 'auto', icon: '🎓', basePrice: 20000000, power: 85000 },
+            { id: 'a10', type: 'auto', icon: '🧘', basePrice: 150000000, power: 350000 },
+            { id: 'a11', type: 'auto', icon: '⚛️', basePrice: 800000000, power: 1500000 },
+            { id: 'a12', type: 'auto', icon: '🛰️', basePrice: 5000000000, power: 6000000 },
+            { id: 'a13', type: 'auto', icon: '🪐', basePrice: 40000000000, power: 25000000 },
+            { id: 'a14', type: 'auto', icon: '🧠', basePrice: 350000000000, power: 120000000 },
+            { id: 'a15', type: 'auto', icon: '🌌', basePrice: 3000000000000, power: 600000000 },
+            { id: 'a16', type: 'auto', icon: '🔮', basePrice: 35000000000000, power: 3000000000 },
+            { id: 'a17', type: 'auto', icon: '🕸️', basePrice: 400000000000000, power: 20000000000 },
+            { id: 'a18', type: 'auto', icon: '🛸', basePrice: 5000000000000000, power: 150000000000 },
+            { id: 'a19', type: 'auto', icon: '♾️', basePrice: 70000000000000000, power: 800000000000 },
+            { id: 'a20', type: 'auto', icon: '👨‍💻', basePrice: 999000000000000000, power: 5000000000000 },
         ];
 
         let gameState = {
@@ -438,13 +938,16 @@
             clickPower: 1,
             autoRate: 0,
             rebirths: 0,
-            upgrades: {}
+            upgrades: {},
+            lang: 'es', // Idioma por defecto
+            decoUnlocked: false, // Variable para desbloqueo de decoración
+            btnColor: 'theme-default', // Color del botón guardado
+            btnIcon: '🧠' // Icono guardado
         };
 
         let frenzy = { val: 0, max: 100, active: false, timer: 0, dur: 10000 };
         let audioCtx = null;
         let isMuted = true;
-        let mathBonus = 0; // % acumulado de bonos temporales
 
         const canvas = document.getElementById('mathCanvas');
         const ctx = canvas.getContext('2d');
@@ -452,21 +955,152 @@
 
         function init() {
             upgradesConfig.forEach(u => gameState.upgrades[u.id] = 0);
+            loadGame();
+
+            // Configurar selector de idioma
+            document.getElementById('languageSelect').value = gameState.lang;
+            changeLanguage(gameState.lang); // Aplicar traducciones iniciales
+            
+            // Aplicar decoraciones guardadas al iniciar
+            applyColor(gameState.btnColor, true);
+            applyIcon(gameState.btnIcon, true);
+
             initShop();
             recalc();
             requestAnimationFrame(gameLoop);
             initParticles();
             requestAnimationFrame(animParticles);
+            setInterval(saveGame, 30000);
+        }
+
+        // --- LÓGICA DE TRADUCCIÓN ---
+        function changeLanguage(lang) {
+            gameState.lang = lang;
+            document.documentElement.lang = lang;
+            
+            // SOPORTE RTL PARA ÁRABE
+            if(lang === 'ar') {
+                document.documentElement.setAttribute('dir', 'rtl');
+            } else {
+                document.documentElement.setAttribute('dir', 'ltr');
+            }
+            
+            // Actualizar todos los textos estáticos
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(TRANSLATIONS[lang][key]) {
+                    el.innerText = TRANSLATIONS[lang][key];
+                }
+            });
+
+            // Actualizar textos dinámicos
+            initShop(); 
+            recalc();
+            saveGame(true); // Guardar preferencia
+        }
+
+        function getText(key) {
+            return TRANSLATIONS[gameState.lang][key] || TRANSLATIONS['es'][key];
+        }
+
+        function getUpgradeName(id) {
+            if(UPGRADE_NAMES[id] && UPGRADE_NAMES[id][gameState.lang]) {
+                return UPGRADE_NAMES[id][gameState.lang];
+            }
+            return UPGRADE_NAMES[id]['en']; // Fallback
+        }
+
+        // --- SISTEMA DE GUARDADO ---
+        function saveGame(silent = true) {
+            try {
+                localStorage.setItem('mathClickerSave', JSON.stringify(gameState));
+                if (!silent) showToast(getText('toast_saved'));
+            } catch (e) {
+                console.error("Error save:", e);
+                if (!silent) showToast(getText('toast_error'));
+            }
+        }
+
+        function loadGame() {
+            const savedData = localStorage.getItem('mathClickerSave');
+            if (savedData) {
+                try {
+                    const parsed = JSON.parse(savedData);
+                    gameState = { ...gameState, ...parsed };
+                    if (!gameState.upgrades) gameState.upgrades = {};
+                    if (!gameState.lang) gameState.lang = 'es'; // Compatibilidad retroactiva
+                    if (typeof gameState.decoUnlocked === 'undefined') gameState.decoUnlocked = false;
+                    if (!gameState.btnColor) gameState.btnColor = 'theme-default';
+                    if (!gameState.btnIcon) gameState.btnIcon = '🧠';
+                    
+                    upgradesConfig.forEach(u => {
+                        if (typeof gameState.upgrades[u.id] === 'undefined') {
+                            gameState.upgrades[u.id] = 0;
+                        }
+                    });
+                } catch (e) { console.error("Error load", e); }
+            }
+        }
+
+        function manualSave() {
+            saveGame(false);
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        function resetGame() {
+            if (confirm(getText('alert_reset'))) {
+                localStorage.removeItem('mathClickerSave');
+                location.reload();
+            }
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('saveToast');
+            t.innerText = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        function openSettings() {
+            document.getElementById('languageSelect').value = gameState.lang;
+            document.getElementById('settingsModal').style.display = 'flex';
+        }
+        
+        // --- LÓGICA DE DECORACIÓN ---
+        function openDecorationModal() {
+            document.getElementById('decorationModal').style.display = 'flex';
+        }
+
+        function applyColor(theme, init = false) {
+            const btn = document.getElementById('btnClick');
+            btn.classList.remove('theme-default', 'theme-purple', 'theme-gold', 'theme-red');
+            btn.classList.add(theme);
+            gameState.btnColor = theme;
+            if(!init) saveGame();
+        }
+
+        function applyIcon(icon, init = false) {
+            const iconSpan = document.querySelector('#btnClick span.icon');
+            iconSpan.innerText = icon;
+            gameState.btnIcon = icon;
+            
+            if(!init) {
+                // Pequeño efecto al elegir nuevo icono
+                iconSpan.style.transform = 'scale(1.5)';
+                setTimeout(() => iconSpan.style.transform = 'scale(1)', 150);
+                playSound(600, 'triangle');
+                saveGame();
+            }
         }
 
         function format(n) {
             if (n === Infinity) return "INFINITO";
-            if (n >= 1e33) return (n/1e33).toFixed(2) + "D"; // Decillon
-            if (n >= 1e30) return (n/1e30).toFixed(2) + "N"; // Nonillon
-            if (n >= 1e27) return (n/1e27).toFixed(2) + "O"; // Octillon
-            if (n >= 1e24) return (n/1e24).toFixed(2) + "Sp"; // Septillon
-            if (n >= 1e21) return (n/1e21).toFixed(2) + "Sx"; // Sextillon
-            if (n >= 1e18) return (n/1e18).toFixed(2) + "Qi"; // Quintillon
+            if (n >= 1e33) return (n/1e33).toFixed(2) + "D";
+            if (n >= 1e30) return (n/1e30).toFixed(2) + "N";
+            if (n >= 1e27) return (n/1e27).toFixed(2) + "O";
+            if (n >= 1e24) return (n/1e24).toFixed(2) + "Sp";
+            if (n >= 1e21) return (n/1e21).toFixed(2) + "Sx";
+            if (n >= 1e18) return (n/1e18).toFixed(2) + "Qi";
             if (n >= 1e15) return (n/1e15).toFixed(2) + "Q";
             if (n >= 1e12) return (n/1e12).toFixed(2) + "T";
             if (n >= 1e9) return (n/1e9).toFixed(2) + "B";
@@ -476,7 +1110,7 @@
         }
 
         function getRebirthMult() { return 1 + (gameState.rebirths * 0.5); }
-        function getRebirthCost() { return 1000000 * Math.pow(15, gameState.rebirths); } // Costo escala más fuerte
+        function getRebirthCost() { return 1000000 * Math.pow(15, gameState.rebirths); }
 
         function recalc() {
             let cp = 1, ar = 0;
@@ -492,7 +1126,12 @@
             gameState.autoRate = ar * mult;
 
             document.getElementById('rateNum').innerText = format(gameState.autoRate);
-            document.getElementById('clickPowerText').innerText = `+${format(gameState.clickPower)} IQ` + (frenzy.active ? " (x2)" : "");
+            
+            // Actualizar sufijos dinámicos
+            document.querySelector('[data-i18n="rate_suffix"]').innerText = getText('rate_suffix');
+            
+            const cpText = `+${format(gameState.clickPower)} ${getText('score_iq')}` + (frenzy.active ? " (x2)" : "");
+            document.getElementById('clickPowerText').innerText = cpText;
             
             if(gameState.rebirths > 0) {
                 const badge = document.getElementById('rebirthBadge');
@@ -506,15 +1145,19 @@
         function initShop() {
             const cList = document.getElementById('clickUpgradesList');
             const aList = document.getElementById('autoUpgradesList');
+            cList.innerHTML = '';
+            aList.innerHTML = '';
+            
             upgradesConfig.forEach(u => {
                 const el = document.createElement('div');
                 el.className = 'upgrade-card';
                 el.id = `upg-${u.id}`;
                 el.onclick = () => buy(u.id);
+                // Usamos getUpgradeName para el nombre traducido
                 el.innerHTML = `
                     <div class="icon-box">${u.icon}</div>
                     <div class="card-info">
-                        <h4>${u.name} <span class="lvl-badge" id="lvl-${u.id}">Lvl.0</span></h4>
+                        <h4>${getUpgradeName(u.id)} <span class="lvl-badge" id="lvl-${u.id}">Lvl.0</span></h4>
                         <p id="pow-${u.id}">+${format(u.power)}</p>
                     </div>
                     <button class="btn-buy" id="price-${u.id}">${format(u.basePrice)}</button>
@@ -526,10 +1169,13 @@
 
         function updateShopTexts() {
             const mult = getRebirthMult() * (frenzy.active ? 2 : 1);
+            const clickUnit = getText('unit_click');
+            const secUnit = getText('unit_sec');
+
             upgradesConfig.forEach(u => {
                 document.getElementById(`lvl-${u.id}`).innerText = `Lvl.${gameState.upgrades[u.id]}`;
                 document.getElementById(`price-${u.id}`).innerText = format(getPrice(u));
-                document.getElementById(`pow-${u.id}`).innerText = `+${format(u.power * mult)} ${u.type==='click'?'Click':'IQ/s'}`;
+                document.getElementById(`pow-${u.id}`).innerText = `+${format(u.power * mult)} ${u.type==='click'? clickUnit : secUnit}`;
             });
         }
 
@@ -542,13 +1188,12 @@
                 playSound(400 + Math.random()*100, 'triangle');
                 recalc();
                 updateShopTexts();
+                saveGame();
             }
         }
 
         function handleManualClick(e) {
-            // Prevenir doble disparo en algunos dispositivos táctiles
             if(e.type === 'touchstart') e.preventDefault(); 
-            
             tryAudio();
             
             if(!frenzy.active) {
@@ -588,9 +1233,9 @@
             
             const btn = document.getElementById('btnConfirmRebirth');
             if(gameState.iq >= cost) {
-                btn.disabled = false; btn.style.opacity = 1; btn.innerText = "ACEPTAR TÍTULO";
+                btn.disabled = false; btn.style.opacity = 1; btn.innerText = getText('btn_accept_rebirth');
             } else {
-                btn.disabled = true; btn.style.opacity = 0.5; btn.innerText = "IQ INSUFICIENTE";
+                btn.disabled = true; btn.style.opacity = 0.5; btn.innerText = getText('msg_insufficient');
             }
             document.getElementById('rebirthModal').style.display = 'flex';
         }
@@ -603,8 +1248,9 @@
                 document.getElementById('rebirthModal').style.display = 'none';
                 recalc();
                 updateShopTexts();
+                saveGame();
                 playSound(800, 'square');
-                spawnFloat(window.innerWidth/2, window.innerHeight/2, "GRADUADO!", true);
+                spawnFloat(window.innerWidth/2, window.innerHeight/2, getText('msg_graduated'), true);
             }
         }
 
@@ -612,7 +1258,6 @@
             const el = document.createElement('div');
             el.className = `float-number ${isCrit ? 'crit' : ''}`;
             el.innerText = typeof val === 'string' ? val : `+${format(val)}`;
-            // Ajuste para que no salga de pantalla
             const safeX = Math.min(window.innerWidth - 50, Math.max(20, x));
             el.style.left = `${safeX}px`; 
             el.style.top = `${y - 40}px`;
@@ -640,7 +1285,6 @@
 
         function showMathProblem() {
             document.getElementById('btnMathBonus').style.display = 'none';
-            // Dificultad basada en rebirths
             const max = 20 + (gameState.rebirths * 50);
             const n1 = Math.floor(Math.random()*max)+10;
             const n2 = Math.floor(Math.random()*max)+10;
@@ -660,20 +1304,19 @@
                 b.className = 'option-btn'; 
                 b.innerText = o;
                 
-                // Evento Touch para móviles
                 const handleAnswer = (e) => {
                     e.preventDefault();
                     document.getElementById('mathModal').style.display = 'none';
                     if(o === ans) {
-                        const reward = Math.max(500, gameState.iq * 0.30); // 30% del IQ actual
+                        const reward = Math.max(500, gameState.iq * 0.30);
                         gameState.iq += reward; 
-                        spawnFloat(window.innerWidth/2, window.innerHeight/2, "EXCELENTE!", true);
+                        spawnFloat(window.innerWidth/2, window.innerHeight/2, getText('msg_excellent'), true);
                         playSound(1200, 'triangle');
+                        saveGame(); 
                     } else {
                         playSound(150, 'sawtooth');
                     }
                 };
-
                 b.onclick = handleAnswer;
                 container.appendChild(b);
             });
@@ -695,13 +1338,13 @@
                     recalc(); updateShopTexts();
                 }
             } else if(frenzy.val > 0) {
-                frenzy.val -= (dt/1000)*8; // Cae más rápido
+                frenzy.val -= (dt/1000)*8; 
                 document.getElementById('frenzyBar').style.width = Math.max(0, frenzy.val) + "%";
             }
 
-            document.getElementById('score').innerHTML = `${format(gameState.iq)}<small>IQ</small>`;
+            // Usamos innerHTML con cuidado para mantener el texto traducido del IQ
+            document.getElementById('score').innerHTML = `${format(gameState.iq)}<small data-i18n="score_iq">${getText('score_iq')}</small>`;
             
-            // Optimización: Solo actualizar clases si cambia estado de asequible
             upgradesConfig.forEach(u => {
                 const el = document.getElementById(`upg-${u.id}`);
                 const affordable = gameState.iq >= getPrice(u);
@@ -710,6 +1353,17 @@
             });
 
             if(gameState.iq >= getRebirthCost() * 0.1 || gameState.rebirths > 0) document.getElementById('btnRebirth').style.display = 'block';
+
+            // Lógica para desbloquear la decoración a los 10.000.000 de IQ
+            const btnDeco = document.getElementById('btnDecoration');
+            if (gameState.decoUnlocked) {
+                if (btnDeco.style.display === 'none') btnDeco.style.display = 'block';
+            } else if (gameState.iq >= 10000000) {
+                gameState.decoUnlocked = true;
+                showToast(getText('msg_deco_unlocked'));
+                btnDeco.style.display = 'block';
+                saveGame(true);
+            }
 
             requestAnimationFrame(gameLoop);
         }
@@ -737,7 +1391,7 @@
         function animParticles() {
             ctx.clearRect(0, 0, canvasW, canvasH); 
             ctx.font = '20px monospace'; 
-            ctx.fillStyle = 'rgba(56, 189, 248, 0.2)'; /* Restaurado a 0.2 */
+            ctx.fillStyle = 'rgba(56, 189, 248, 0.2)'; 
             particles.forEach(p => { 
                 p.y -= p.v; 
                 if(p.y < -20) p.y = canvasH + 20; 
@@ -748,13 +1402,12 @@
 
         init();
         
-        // Loop del bonus
         setInterval(() => {
             const b = document.getElementById('btnMathBonus'); 
             b.style.display = 'block';
-            playSound(1000, 'sine'); // Aviso sonoro sutil
+            playSound(1000, 'sine');
             setTimeout(() => b.style.display = 'none', 8000);
-        }, 60000); // Cada minuto
+        }, 60000); 
     </script>
 </body>
 </html>
